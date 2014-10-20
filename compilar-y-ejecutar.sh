@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gcc entrada.c -c && gcc -o lexico lexico.c entrada.o && ./lexico bisection.jl
+gcc entrada.c -c && gcc lexico.c -c && gcc -o sintactico sintactico.c entrada.o lexico.o && ./sintactico bisection.jl

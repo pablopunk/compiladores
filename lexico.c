@@ -7,32 +7,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 // Librerias propias
 #include "entrada.h"
 #include "lexico.h"
 
-// Macros
-#define FILEMODE "r" // Modo de apertura del archivo
-#define N 4096 // Tamano del buffer
+int automata
 
-int main(int argc, char** argv)
+token* siguienteComponenteLexico()
 {
-	int out=0;
-	if (argc < 2) { // no hay argumentos de entrada
-		printf("Sin argumentos...\n");
-		return -1;
-	}
-
-	strcpy(nombreArchivo, argv[1]);
-	if ( (out = leerArchivo()) ) {
-		return out; // devuelvo el error que me devuelve la funcion
-	}
-
+	token* comp_lex; // Puntero a la estructura que vamos a devolver
 	char c;
 
-	while ( (c = siguienteCaracter()) != -1) {
-		printf("%c", c);
-	}
+	comp_lex = (token*) malloc(sizeof(token));
+	comp_lex->lexema = (char*) malloc(32*sizeof(char));
 
-	return 0;
+	c = siguienteCaracter();
+
+	return comp_lex;
 }

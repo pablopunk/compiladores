@@ -19,7 +19,23 @@ FILE* pFile; // puntero al archivo
 char* buffer[2]; // buffers de entrada ( 2 bloques por el metodo del centinela )
 char* inicio; // Puntero al inicio del lexema
 char* delantero; // Puntero al caracter que estamos leyendo
-int leyendoBuffer=0; // Guarda en que buffer esta delantero (0 o 1)
+int leyendoBuffer; // Numero de buffer que leimos de ultimo
+
+void cargarBuffer(int n)
+{
+	int i=0;
+	char c;
+
+	if (n == 2) {
+		n = leyendoBuffer = 0;
+	}
+
+	while ( (c = fgetc(pFile)) != EOF && (i<N) ) { // Leo N caracteres del archivo
+		buffer[n][i++] = c;
+	}
+	buffer[n][i] = EOF; // Fin de fichero -
+	buffer[n][N] = EOF; // Fin de buffer  - Puede coincidir con el fin de fichero
+}
 
 // Funcion de lectura, devuelve 0 en caso de que no haya errores
 int leerArchivo()
@@ -39,27 +55,8 @@ int leerArchivo()
 	buffer[0] = (char*) malloc((N+1) * sizeof(char));
 	buffer[1] = (char*) malloc((N+1) * sizeof(char));
 
-	while ( (c = fgetc(pFile)) != EOF ) {
-		if (count < N) {
-			buffer[numeroBuffer][count++] = c; // Guardo cada caracter en el buffer
-
-		} else if (count == N) { // Si estamos en el fin del buffer
-			if (numeroBuffer == 0) {
-				// Buffer 1
-				buffer[0][N] = EOF; // Centinela
-				buffer[1][0] = c;
-				count = 1;
-				numeroBuffer++;
-			
-			} else {
-				// Buffer 2
-				buffer[1][N] = EOF; // Centinela
-				fseek(pFile, -1, SEEK_CUR); // Retornamos un caracter porque no lo hemos guardado aun
-				break; // Buffers completos
-			} 
-		}
-
-	}
+	cargarBuffer(0);
+	cargarBuffer(1);
 
 	inicio = delantero = buffer[0]; // Inicio los punteros
 
@@ -83,16 +80,11 @@ char siguienteCaracter()
 	if (*delantero == EOF) {
 		if (esFinDeFichero()) {
 			return -1; // Devolvemos -1 para EOF
-		} 
-		else if (leyendoBuffer == 0) { // Si estamos en el buffer 0
-			leyendoBuffer++;
-			delantero = buffer[1];
-			return *(delantero++);
-		} 
-		// si estamos en el buffer 1
-		leerArchivo();
-		delantero = buffer[0];
-		leyendoBuffer = 0;
+		}
+
+		// Si estamos al final de un buffer
+		cargarBuffer(++leyendoBuffer);
 	}
+
 	return *(delantero++);
 }
