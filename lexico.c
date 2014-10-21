@@ -12,8 +12,6 @@
 #include "entrada.h"
 #include "lexico.h"
 
-int automata
-
 token* siguienteComponenteLexico()
 {
 	token* comp_lex; // Puntero a la estructura que vamos a devolver
@@ -23,6 +21,11 @@ token* siguienteComponenteLexico()
 	comp_lex->lexema = (char*) malloc(32*sizeof(char));
 
 	c = siguienteCaracter();
+	comp_lex->lexema[0] = c;
+
+	if (c == -1) {
+		comp_lex->numero = EOF;
+	}
 
 	return comp_lex;
 }
