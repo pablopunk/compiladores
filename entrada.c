@@ -112,18 +112,21 @@ char* lexemaActual(int offset)
 	}
 
 	//printf("inicio: %c\tdelantero: %c\n", *inicio, *delantero);
+	printf("( %i )\n", offset);
 
-	do {
-		string[i++] = *inicio; // guardo el caracter
+	for (i=0; i < offset; i++) {
+		string[i] = *inicio; // guardo el caracter
 
 		if ( (inicio == (buffer[bufferDeInicio]+N)) && (bufferDeInicio<MAXBUFFERS) ) {
+			i--; // No queremos leer el centinela
 			inicio = buffer[++bufferDeInicio]; // Continuamos con inicio en el siguiente buffer
 		} else if ( (inicio == (buffer[bufferDeInicio]+N)) && (bufferDeInicio==MAXBUFFERS) ) {
+			i--; // No queremos leer el centinela
 			inicio = buffer[0]; // volvemos al primer buffer
 		} else {
 			inicio++; // seguimos en el mismo buffer
 		}
-	} while (i < offset);
+	}
 
 	return string;
 }

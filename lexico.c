@@ -34,12 +34,15 @@ void inicioLexema()
 		case EOF: end = 1; fileEnd = 1; break;
 		case ' ': case '\t': break;
 		case '\n': numlinea++; break;
-		case '(': case ')': case ',': case '=': end = 1; break;
-	}
+		case '(': case ')': case ',': case '+': case '-': case '*': case '/': case '^': case ';': numChar++; end = 1; break;
+		case '=': case '<': case '>': numChar++; estado = 6; break; // puede haber un = despues
 
-	if (isdigit(c)) estado = 1; // Pasamos al estado de lectura de digitos
-	else if (isalpha(c)) estado = 2; // Pasamos al estado de lectura alfanumerico
-	else if (c == '#') estado = 3; // Estado de comentarios
+		default:
+		if (isdigit(c)) estado = 1; // Pasamos al estado de lectura de digitos
+		else if (isalpha(c)) estado = 2; // Pasamos al estado de lectura alfanumerico
+		else if (c == '#') estado = 3; // Estado de comentarios
+		break;
+	}
 }
 
 // Lexema numerico
@@ -52,7 +55,8 @@ void lexemaNumerico()
 		case EOF: end = 1; fileEnd = 1; break;
 		case ' ': case '\t': end = 1; break;
 		case '\n': numlinea++; end = 1; break;
-		case '(': case ')': case ',': case '=': end = 1; retroceder(); break;
+		case '(': case ')': case ',': case '+': case '-': case '*': case '/': case '^': case ';': end = 1; retroceder(); break;
+		case '=': case '<': case '>': retroceder(); end = 1; break;
 	}
 }
 // Lexema alfanumerico
@@ -65,7 +69,8 @@ void lexemaAlfanumerico()
 		case EOF: end = 1; fileEnd = 1; break;
 		case ' ': case '\t': end = 1; break;
 		case '\n': numlinea++; end = 1; break;
-		case '(': case ')': case ',': case '=': end = 1; retroceder(); break;
+		case '(': case ')': case ',': case '+': case '-': case '*': case '/': case '^': case ';': end = 1; retroceder(); break;
+		case '=': case '<': case '>': retroceder(); end = 1; break;
 	}
 }
 
@@ -86,6 +91,7 @@ void inicioComentario()
 void comentarioMultilinea()
 {
 	c = siguienteCaracter(); // Me traigo el siguiente caracter
+
 	if (c == '=' && !finDeComentarioMultilinea) finDeComentarioMultilinea = 1;
 	else if (c == '#' && finDeComentarioMultilinea) {
 		finDeComentarioMultilinea = 0;
@@ -98,9 +104,23 @@ void comentarioMultilinea()
 void comentarioMonolinea()
 {
 	c = siguienteCaracter();
+
 	if (c == '\n') {
 		numlinea++;
 		estado = 0; // Siguiente lexema (ignoramos el comentario)
+	}
+}
+
+// Al detectar un < o un > o un = esperamos un = (o no)
+void comparador()
+{
+	c = siguienteCaracter();
+
+	switch(c) {
+		case EOF: end = 1; fileEnd = 1; break;
+		case '\n': numlinea++; end = 1; break;
+		case '=': numChar++; end = 1; break; // Segundo caracter del comparador
+		default: retroceder(); end = 1; // Si no es = retrocedemos y acabamos
 	}
 }
 
@@ -145,6 +165,11 @@ token* siguienteComponenteLexico()
 
 			case 5: // Comentario monolinea
 			comentarioMonolinea();
+
+			break;
+
+			case 6: // Inicio de un comparador
+			comparador();
 
 			break;
 
