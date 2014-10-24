@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 		if (componente->numero == EOF) { // Si alcanzamos EOF
 			break; // Salimos del bucle
 		}
-		printf("%s", componente->lexema);
+		printf("<%s>\n", componente->lexema);
 
 	} while (1);
 

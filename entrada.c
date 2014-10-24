@@ -6,6 +6,7 @@
 // Librerias de C
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 // Librerias propias
 #include "entrada.h"
 
@@ -79,7 +80,7 @@ char siguienteCaracter()
 {
 	if (*delantero == EOF) {
 		if (esFinDeFichero()) {
-			return -1; // Devolvemos -1 para EOF
+			return EOF; // Devolvemos fin de fichero
 		}
 
 		// Si estamos al final de un buffer
@@ -87,4 +88,48 @@ char siguienteCaracter()
 	}
 
 	return *(delantero++);
+}
+
+// Mover el puntero de inicio de lexema al caracter actual
+void moverInicio()
+{
+	inicio = delantero-1;
+}
+
+// Obtener lexema desde el puntero de inicio, tamaño offset
+char* lexemaActual(int offset)
+{
+	char* string = (char*) malloc(offset*sizeof(char));
+
+	int i = 0, j;
+	int bufferDeInicio=0; // Buffer donde esta el puntero Inicio
+
+	for (j=0; j<MAXBUFFERS; j++) { // Miramos en que buffer esta Inicio
+		if (inicio < buffer[j]+N) {
+			bufferDeInicio = j;
+			break;
+		}
+	}
+
+	//printf("inicio: %c\tdelantero: %c\n", *inicio, *delantero);
+
+	do {
+		string[i++] = *inicio; // guardo el caracter
+
+		if ( (inicio == (buffer[bufferDeInicio]+N)) && (bufferDeInicio<MAXBUFFERS) ) {
+			inicio = buffer[++bufferDeInicio]; // Continuamos con inicio en el siguiente buffer
+		} else if ( (inicio == (buffer[bufferDeInicio]+N)) && (bufferDeInicio==MAXBUFFERS) ) {
+			inicio = buffer[0]; // volvemos al primer buffer
+		} else {
+			inicio++; // seguimos en el mismo buffer
+		}
+	} while (i < offset);
+
+	return string;
+}
+
+// Retroceder puntero delantero 1 caracter
+void retroceder()
+{
+	delantero--;
 }

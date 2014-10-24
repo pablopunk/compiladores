@@ -10,3 +10,12 @@ int leerArchivo();
 
 // Funcion que devuelve el siguiente caracter del buffer (-1 para EOF)
 char siguienteCaracter();
+
+// Mover el puntero de inicio de lexema al caracter actual
+void moverInicio();
+
+// Obtener lexema desde el puntero de inicio hasta delantero
+char* lexemaActual();
+
+// Retroceder puntero delantero 1 caracter
+void retroceder();
