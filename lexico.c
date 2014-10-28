@@ -12,6 +12,7 @@
 #include "entrada.h"
 #include "lexico.h"
 #include "errores.h"
+#include "definiciones.h"
 
 int numlinea=1; // Contamos el numero de lineas (empiezan en 1)
 char c;
@@ -200,9 +201,8 @@ void hexadecimal()
 			if (c == 'a' || c == 'b' || c == 'c' || c == 'd' || c == 'e' || c == 'f') {
 				numChar++;
 			} else {
-				// si 0x12z esta mal
-				error(numlinea, "Leyendo un hexadecimal se encontró una letra no válida");
-				// si 0xz puede que xz sea una variable asique retrocedemos los caracteres que leimos (menos 0x)
+				// Aunque no sea hexadecimal puede ser un numero con una variable -> 0xz (0 * xz)
+				retroceder(numChar);
 				end = 1;
 			}
 		} else if (isdigit(c)){
@@ -212,13 +212,85 @@ void hexadecimal()
 	}
 }
 
+// Retorna el codigo del lexema (descrito en el fichero de definiciones.h)
 int obtenerDefinicion(char* lexema)
 {
-	switch(lexema[0]) {
+	c = lexema[0];
+	int i=0;
 
+	// Si solo es un caracter retornamos el codigo ASCII
+	if (strlen(lexema) == 1) {
+		return c;
 	}
 
-	return -1;
+	if ( isalpha(c) ) {
+		if (!strcmp(lexema, "function")) {
+			return FUNCTION;
+		}
+		if (!strcmp(lexema, "if")) {
+			return IF;
+		}
+		if (!strcmp(lexema, "sign")) {
+			return SIGN;
+		}
+		if (!strcmp(lexema, "error")) {
+			return ERROR;
+		}
+		if (!strcmp(lexema, "end")) {
+			return END;
+		}
+		if (!strcmp(lexema, "while")) {
+			return WHILE;
+		}
+		if (!strcmp(lexema, "eps")) {
+			return EPS;
+		}
+		if (!strcmp(lexema, "return")) {
+			return RETURN;
+		}
+		if (!strcmp(lexema, "else")) {
+			return ELSE;
+		}
+		if (!strcmp(lexema, "try")) {
+			return TRY;
+		}
+		if (!strcmp(lexema, "catch")) {
+			return CATCH;
+		}
+		if (!strcmp(lexema, "println")) {
+			return PRINTLN;
+		}
+		if (!strcmp(lexema, "Inf")) {
+			return INF;
+		}
+		// Si no es ninguna palabra reservada, es un ID
+		return ID;
+	}
+
+	if ( isdigit(c) ) {
+		// Si tiene un '.' es un float
+		for (i = 0; i < strlen(lexema); i++) {
+			if (lexema[i] == '.') {
+				return FLOAT;
+			}
+		}
+		// Si su segundo caracter es una 'x' es un Hexadecimal
+		if (lexema[1] == 'x') {
+			return HEX;
+		}
+		return INT;
+	}
+
+	switch(c) {
+		// Asumimos que aqui tenemos mas de un caracter (sino ya hubiera retornado)
+		case '"': return STRING; break;
+		case '/': return FRACTION; break;
+		case '>': return GREATEREQ; break;
+		case '<': return LESSEQ; break;
+		case '=': return EQUALS; break;
+	}
+
+	return -2;
 }
 
 token* siguienteComponenteLexico()
@@ -299,7 +371,7 @@ token* siguienteComponenteLexico()
 		comp_lex->lexema = (char*) malloc(numChar*sizeof(char)); // Reservo solo la memoria que necesito (numChar)
 		comp_lex->lexema = lexemaActual(numChar);
 		comp_lex->linea = numlinea;
-		//comp_lex->numero = obtenerDefinicion(comp_lex->lexema);
+		comp_lex->numero = obtenerDefinicion(comp_lex->lexema);
 	} else {
 		comp_lex->numero = EOF;
 	}

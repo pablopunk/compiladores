@@ -155,7 +155,7 @@ void retroceder(int offset)
 
 	flag = 0;
 
-	for (i = 0; i < offset; i++) {
+	while ( (i++) < offset ) {
 		retroceder1();
 	}
 }
