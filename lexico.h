@@ -9,6 +9,7 @@ typedef struct
 {
 	char* lexema;
 	int numero;
+	int linea;
 } token;
 
 // Devuelve el puntero a la estructura de componente lexico (token)

@@ -25,14 +25,9 @@ int main(int argc, char** argv)
 
 	token* componente;
 
-	do {
-		componente = siguienteComponenteLexico();
-		if (componente->numero == EOF) { // Si alcanzamos EOF
-			break; // Salimos del bucle
-		}
-		printf("<%s>\n", componente->lexema);
-
-	} while (1);
+	while ( (componente = siguienteComponenteLexico()) && (componente->numero != EOF) ) {
+		printf("%i | <%s>\n", componente->linea, componente->lexema);
+	}
 
 	return 0;
 }

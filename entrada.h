@@ -15,7 +15,7 @@ char siguienteCaracter();
 void moverInicio();
 
 // Obtener lexema desde el puntero de inicio hasta delantero
-char* lexemaActual();
+char* lexemaActual(int offset);
 
-// Retroceder puntero delantero 1 caracter
-void retroceder();
+// Retroceder puntero delantero offset caracteres
+void retroceder(int offset);

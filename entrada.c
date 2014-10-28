@@ -12,30 +12,30 @@
 
 // Macros
 #define FILEMODE "r" // Modo de apertura del archivo
-#define N 128 // Tamano del buffer
+#define N 4096 // Tamano del buffer
 #define MAXBUFFERS 2 // Numero de buffers que usamos
 
 // Variables globales
 char nombreArchivo[64];
 FILE* pFile; // puntero al archivo
-char* buffer[MAXBUFFERS]; // buffers de entrada ( 2 bloques por el metodo del centinela )
+char buffer[MAXBUFFERS][N+1]; // buffers de entrada ( 2 bloques por el metodo del centinela )
 char* inicio; // Puntero al inicio del lexema
 char* delantero; // Puntero al caracter que estamos leyendo
 int leyendoBuffer=0; // Numero de buffer que leimos de ultimo
+int bufferDeInicio=0; // Numero de buffer donde esta el puntero de inicio
+int flag; // es 1 para no volver a cargar el buffer en los retrocesos
 
 void cargarBuffer(int n)
 {
-	int i=0;
-	char c;
+	int leidos=0;
 
-	if (n == MAXBUFFERS) n = 0; // Volemos al primer buffer
+	if (n < 0 || n >= MAXBUFFERS) n = 0; // Volemos al primer buffer
 
 	leyendoBuffer = n; // Actualizamos el ultimo buffer leido
 
-	while ( (i<N) && ((c = fgetc(pFile)) != EOF) ) { // Leo N caracteres del archivo
-		buffer[n][i++] = c;
-	}
-	buffer[n][i] = EOF; // Fin de fichero si i<N / si no, es el fin del buffer
+	leidos = fread(buffer[n], 1, N, pFile); // Leo N bytes(1) del archivo
+
+	buffer[n][leidos] = EOF; // Fin de fichero si leidos<N / si no, es el fin del buffer (centinela)
 
 	// actualizo el puntero delantero
 	delantero = buffer[n];
@@ -44,17 +44,12 @@ void cargarBuffer(int n)
 // Funcion de lectura, devuelve 0 en caso de que no haya errores
 int leerArchivo()
 {
-	char c;
 
 	// Abro el archivo en modo lectura
 	if ( (pFile = fopen(nombreArchivo, FILEMODE)) == NULL ) {
 		printf("Error al leer archivo '%s'\n", nombreArchivo);
 		return -1;
 	}
-
-	// Reservo memoria para el buffer
-	buffer[0] = (char*) malloc((N+1) * sizeof(char));
-	buffer[1] = (char*) malloc((N+1) * sizeof(char));
 
 	// Cargo el primer buffer
 	cargarBuffer(0);
@@ -83,8 +78,13 @@ char siguienteCaracter()
 			return EOF; // Devolvemos fin de fichero
 		}
 
-		// Si estamos al final de un buffer
-		cargarBuffer(++leyendoBuffer);
+		// Si estamos al final de un buffer, cargamos el siguiente si flag es 0
+		if (!flag) {
+			cargarBuffer(++leyendoBuffer);
+		} else {
+			delantero = buffer[leyendoBuffer-1];
+			flag = 0;
+		}
 	}
 
 	return *(delantero++);
@@ -93,46 +93,69 @@ char siguienteCaracter()
 // Mover el puntero de inicio de lexema al caracter actual
 void moverInicio()
 {
-	inicio = delantero-1;
+	inicio = delantero;
 }
 
 // Obtener lexema desde el puntero de inicio, tamaño offset
 char* lexemaActual(int offset)
 {
 	char* string = (char*) malloc(offset*sizeof(char));
+	int i = 0;
 
-	int i = 0, j;
-	int bufferDeInicio=0; // Buffer donde esta el puntero Inicio
+	// printf("\ninicio: %s\ndelantero: %s\n\n", inicio, delantero);
+	// printf("( %i )\n", offset);
 
-	for (j=0; j<MAXBUFFERS; j++) { // Miramos en que buffer esta Inicio
-		if (inicio < buffer[j]+N) {
-			bufferDeInicio = j;
-			break;
-		}
+	if (bufferDeInicio >= MAXBUFFERS) {
+		bufferDeInicio = 0;
 	}
 
-	//printf("inicio: %c\tdelantero: %c\n", *inicio, *delantero);
-	printf("( %i )\n", offset);
+	if (*inicio == EOF) {
+		inicio = buffer[bufferDeInicio++];
+	}
 
 	for (i=0; i < offset; i++) {
-		string[i] = *inicio; // guardo el caracter
 
-		if ( (inicio == (buffer[bufferDeInicio]+N)) && (bufferDeInicio<MAXBUFFERS) ) {
-			i--; // No queremos leer el centinela
-			inicio = buffer[++bufferDeInicio]; // Continuamos con inicio en el siguiente buffer
-		} else if ( (inicio == (buffer[bufferDeInicio]+N)) && (bufferDeInicio==MAXBUFFERS) ) {
-			i--; // No queremos leer el centinela
-			inicio = buffer[0]; // volvemos al primer buffer
-		} else {
-			inicio++; // seguimos en el mismo buffer
+		string[i] = *(inicio++);
+
+		if (*inicio == EOF) {
+			inicio = buffer[bufferDeInicio++];
 		}
 	}
 
 	return string;
 }
 
-// Retroceder puntero delantero 1 caracter
-void retroceder()
+// Retroceder delantero 1 caracter
+void retroceder1()
 {
-	delantero--;
+	int i = 0;
+
+	for (i = 0; i < MAXBUFFERS; i++) { // Miro si estoy al comienzo de un buffer
+		if (delantero == buffer[i]) {
+			flag = 1;
+			break;
+		}
+	}
+
+	if (flag) {
+		if (i == 0) {
+			delantero = buffer[MAXBUFFERS-1]+(N-1); // Apuntamos delantero al ultimo caracter del anterior buffer
+		} else {
+			delantero = buffer[i-1]+(N-1); // Apuntamos delantero al ultimo caracter del anterior buffer
+		}
+	} else {
+		delantero--;
+	}
+}
+
+// Retroceder puntero delantero offset caracteres
+void retroceder(int offset)
+{
+	int i=0;
+
+	flag = 0;
+
+	for (i = 0; i < offset; i++) {
+		retroceder1();
+	}
 }

@@ -18,3 +18,11 @@
 #define PRINTLN 268
 #define ID 269
 #define INF 270
+#define INT 271
+#define FLOAT 272
+#define STRING 273
+#define FRACTION 274 // '//'
+#define GREATEREQ 275 // >=
+#define LESSEQ 276 // <=
+#define EQUALS 277 // == 
+#define HEX 278
