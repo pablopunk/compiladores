@@ -9,6 +9,8 @@
 // Librerias propias
 #include "lexico.h"
 #include "entrada.h"
+#include "tabla_simbolos.h"
+#include "definiciones.h"
 
 int main(int argc, char** argv)
 {
@@ -25,9 +27,17 @@ int main(int argc, char** argv)
 
 	token* componente;
 
+	// Iniciamos la tabla de simbolos
+	inicializarTabla();
+
 	while ( (componente = siguienteComponenteLexico()) && (componente->numero != EOF) ) {
+		if (componente->numero == ID && !busquedaTabla(componente->lexema)) { // Si es un ID lo metemos en la tabla
+			insertarTabla(componente->lexema);
+		}
 		printf("%i| <%i>\t%s\n", componente->linea, componente->numero, componente->lexema);
 	}
+
+	imprimirTabla();
 
 	return 0;
 }
