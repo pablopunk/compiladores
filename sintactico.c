@@ -29,6 +29,8 @@ int main(int argc, char** argv)
 
 	// Iniciamos la tabla de simbolos
 	inicializarTabla();
+	// Inicializamos el lexico
+	inicializarLexico();
 
 	while ( (componente = siguienteComponenteLexico()) && (componente->numero != EOF) ) {
 		if (componente->numero == ID && !busquedaTabla(componente->lexema)) { // Si es un ID lo metemos en la tabla
@@ -37,7 +39,12 @@ int main(int argc, char** argv)
 		printf("%i| <%i>\t%s\n", componente->linea, componente->numero, componente->lexema);
 	}
 
-	imprimirTabla();
+	//imprimirTabla();
+
+	// Liberamos la tabla de simbolos
+	liberarTabla();
+	// Liberamos los componentes lexicos
+	liberarLexico();
 
 	return 0;
 }

@@ -39,3 +39,11 @@ void imprimir(nodo * tree) {
 	printf("%s\n",tree->val);
 	if(tree->right) imprimir(tree->right);
 }
+
+void suprimir(nodo ** tree)
+{
+	if((*tree)->left) suprimir(&(*tree)->left);
+	if((*tree)->right) suprimir(&(*tree)->right);
+	free (*tree);
+	*tree = NULL;
+}

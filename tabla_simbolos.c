@@ -32,6 +32,12 @@ void inicializarTabla()
 	insertarTabla("int");
 }
 
+// Liberar memoria
+void liberarTabla()
+{
+	suprimir(&raiz);
+}
+
 // insertarar lexema en la tabla
 void insertarTabla(char* lexema)
 {

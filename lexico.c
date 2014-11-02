@@ -20,6 +20,20 @@ int estado; // Para controlar los automatas
 int end=0, fileEnd=0;
 int finDeComentarioMultilinea = 0; // 1 si estamos esperando un #
 int numChar = 0; // caracteres del lexema
+token* comp_lex; // Puntero a la estructura que vamos a devolver
+
+// Reservamos memoria
+void inicializarLexico()
+{
+	comp_lex = (token*) malloc(sizeof(token));
+}
+
+// liberamos memoria
+void liberarLexico()
+{
+	free(comp_lex);
+	comp_lex = NULL;
+}
 
 // Inicio lexema
 void inicioLexema()
@@ -162,6 +176,7 @@ void fraccion()
 	}
 }
 
+// Tenemos un 0 y esperamos una x
 void inicioHexadecimal()
 {
 	c = siguienteCaracter();
@@ -179,7 +194,7 @@ void inicioHexadecimal()
 			retroceder(1);
 			end = 1;
 		} else {
-			//numChar++; // Sigo en los digitos
+			// sigo en los digitos
 			estado = 1;
 		}
 		break;
@@ -295,13 +310,6 @@ int obtenerDefinicion(char* lexema)
 
 token* siguienteComponenteLexico()
 {
-	token* comp_lex; // Puntero a la estructura que vamos a devolver
-
-	comp_lex = (token*) malloc(sizeof(token));
-
-	comp_lex->lexema = "";
-	//comp_lex->numero = EOF;
-
 	estado = 0;  end=0, fileEnd=0; finDeComentarioMultilinea = 0; numChar = 0;
 
 	while (!end) {
@@ -369,11 +377,11 @@ token* siguienteComponenteLexico()
 
 	if (!fileEnd) {
 		comp_lex->lexema = (char*) malloc(numChar*sizeof(char)); // Reservo solo la memoria que necesito (numChar)
-		comp_lex->lexema = lexemaActual(numChar);
-		comp_lex->linea = numlinea;
-		comp_lex->numero = obtenerDefinicion(comp_lex->lexema);
+		comp_lex->lexema = lexemaActual(numChar); // me traigo el lexema (desde el puntero inicio)
+		comp_lex->linea = numlinea; // Guardo el numero de linea en la estructura
+		comp_lex->numero = obtenerDefinicion(comp_lex->lexema); // veo que identificador tiene con el fichero de definiciones como ayuda
 	} else {
-		comp_lex->numero = EOF;
+		comp_lex->numero = EOF; // termina el archivo
 	}
 
 	return comp_lex;
