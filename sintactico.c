@@ -22,14 +22,20 @@ int numlinea=1; /* Empezamos en la linea 1 no en la 0 */
 DIGITO	[0-9] // Numeros
 ID		[a-z][a-z0-9]*
 
-%x comentario
+%x comentario comentarioMono
 %%
 
 "#="	BEGIN(comentario);
+"#"		BEGIN(comentarioMono);
 <comentario>[^=\n]*		/* ignora todo lo que no sea '=' */
 <comentario>"*"+[^=#\n]	/* ignora los '=' que no siguen con '#' */
 <comentario>\n			++numlinea; /* tambien contamos las lineas */
 <comentario>"="+"#"		BEGIN(INITIAL); /* salimos del comentario */
+<comentarioMono>[^\n]*	/* ignora todo hasta el salto de linea */
+<comentarioMono>\n {
+	++numlinea;
+	BEGIN(INITIAL);
+}
 
 %% 
 
