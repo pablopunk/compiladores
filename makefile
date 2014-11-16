@@ -1,8 +1,6 @@
 all:
-	mv sintactico.c sintactico.flex && flex sintactico.flex && gcc -o compilador -g *.c -lfl && mv sintactico.flex sintactico.c
-
+	flex sintactico.flex && gcc -o compilador -g *.c -lfl
 osx:
-	mv sintactico.c sintactico.flex && flex sintactico.flex && gcc -o compilador -g *.c -ll && mv sintactico.flex sintactico.c
-
+	flex sintactico.flex && gcc -o compilador -g *.c -ll 
 linux:
-	mv sintactico.c sintactico.flex && flex sintactico.flex && gcc -o compilador -g *.c -lfl && mv sintactico.flex sintactico.c
+	flex sintactico.flex && gcc -o compilador -g *.c -lfl
