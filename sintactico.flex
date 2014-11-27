@@ -45,6 +45,7 @@ HEX			[a-f|0-9]+
 }
 
 <string>[^"\""]*	printf("%s", yytext); /* ignora todo hasta que no acabe el string pero lo imprimo */
+<string>\n			++numlinea;
 <string>"\"" {		/* imprimo las comillas finales y salgo del automata */
 	printf("\"\n");
 	BEGIN(INITIAL);
@@ -113,6 +114,8 @@ int main(int argc, char** argv)
 
     // Analisis lexico
     yylex();
+
+    printf("\nNumero de lineas: %d\n", numlinea);
 
 	return 0;
 }
