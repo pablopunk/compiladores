@@ -8,7 +8,6 @@
 #include <string.h>
 // Librerias propias
 #include "tabla_simbolos.h"
-#include "abin.h"
 
 nodo * raiz;
 
@@ -16,20 +15,37 @@ nodo * raiz;
 void inicializarTabla()
 {
 	// Palabras reservadas
-	insertarTabla("function");
-	insertarTabla("if");
-	insertarTabla("sign");
-	insertarTabla("error");
-	insertarTabla("end");
-	insertarTabla("while");
-	insertarTabla("eps");
-	insertarTabla("return");
-	insertarTabla("else");
-	insertarTabla("try");
-	insertarTabla("catch");
-	insertarTabla("println");
-	insertarTabla("Inf");
-	insertarTabla("int");
+	int max_len_lexema = 16;
+	token* T = (token*) malloc(sizeof(token));
+	T->lexema = (char*) malloc(max_len_lexema*sizeof(char));
+	T->lexema = "function";
+	insertarTabla(T);
+	T->lexema = "if";
+	insertarTabla(T);
+	T->lexema = "sign";
+	insertarTabla(T);
+	T->lexema = "error";
+	insertarTabla(T);
+	T->lexema = "end";
+	insertarTabla(T);
+	T->lexema = "while";
+	insertarTabla(T);
+	T->lexema = "eps";
+	insertarTabla(T);
+	T->lexema = "return";
+	insertarTabla(T);
+	T->lexema = "else";
+	insertarTabla(T);
+	T->lexema = "try";
+	insertarTabla(T);
+	T->lexema = "catch";
+	insertarTabla(T);
+	T->lexema = "println";
+	insertarTabla(T);
+	T->lexema = "Inf";
+	insertarTabla(T);
+	T->lexema = "int";
+	insertarTabla(T);
 }
 
 // Liberar memoria
@@ -39,13 +55,13 @@ void liberarTabla()
 }
 
 // insertarar lexema en la tabla
-void insertarTabla(char* lexema)
+void insertarTabla(token * lexema)
 {
 	insertar(&raiz, lexema);
 }
 
 // buscar lexema en la tabla (1 si esta, 0 si no)
-int busquedaTabla(char* lexema)
+int busquedaTabla(token * lexema)
 {
 	return existe(&raiz, lexema);
 }

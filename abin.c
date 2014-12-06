@@ -5,30 +5,34 @@
 
 #include "abin.h"
 
-void insertar(nodo ** tree, char* item) {
+void insertar(nodo ** tree, token * item) {
 	if(!(*tree)) {
 		*tree = (nodo *)malloc(sizeof(nodo));
 		(*tree)->left = (*tree)->right = NULL;
-		(*tree)->val = (char*) malloc(strlen(item)*sizeof(char));
+		(*tree)->val = (token*) malloc(sizeof(token));
+		(*tree)->val->lexema = (char*) malloc(strlen((*item).lexema)*sizeof(char));
+		(*tree)->val->lexema = (*item).lexema;
+		(*tree)->val->valor = (*item).valor;
 		(*tree)->val = item;
 		return;
 	}
-	if(strcmp(item,(*tree)->val)<0)
+	if(strcmp((*item).lexema,(*tree)->val->lexema)<0)
 		insertar(&(*tree)->left, item);
-	else if(strcmp(item,(*tree)->val)>0)
+	else if(strcmp((*item).lexema,(*tree)->val->lexema)>0)
 		insertar(&(*tree)->right, item);
+	/* Si es igual obviamente ya existe y no lo inserta de nuevo */
 }
 
-int existe(nodo ** tree, char* item) {
+int existe(nodo ** tree, token * item) {
 	if (!(*tree)) {
 		return 0;
 	}
-	if(!strcmp((*tree)->val,item)) {
+	if(!strcmp((*tree)->val->lexema,(*item).lexema)) {
 		return 1;
 	}
-	if(strcmp(item,(*tree)->val)<0)
+	if(strcmp((*item).lexema,(*tree)->val->lexema)<0)
 		return existe(&(*tree)->left, item);
-	else if(strcmp(item,(*tree)->val)>0)
+	else if(strcmp((*item).lexema,(*tree)->val->lexema)>0)
 		return existe(&(*tree)->right, item);
 
 	return 0;
@@ -36,7 +40,7 @@ int existe(nodo ** tree, char* item) {
 
 void imprimir(nodo * tree) {
 	if(tree->left) imprimir(tree->left);
-	printf("%s\n",tree->val);
+	printf("%s := %d\n",tree->val->lexema,tree->val->valor);
 	if(tree->right) imprimir(tree->right);
 }
 

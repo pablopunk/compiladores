@@ -1,6 +1,6 @@
 all:
-	flex sintactico.flex && gcc -o compilador -g *.c -lfl
+	bison -d sintactico.y && flex lexico.l && gcc *.c -o compilador -lfl -lm
 osx:
-	flex sintactico.flex && gcc -o compilador -g *.c -ll 
+	bison -d sintactico.y && flex lexico.l && gcc *.c -o compilador -ll -lm
 linux:
-	flex sintactico.flex && gcc -o compilador -g *.c -lfl
+	bison -d sintactico.y && flex lexico.l && gcc *.c -o compilador -lfl -lm
