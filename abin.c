@@ -13,14 +13,16 @@ void insertar(nodo ** tree, token * item) {
 		(*tree)->val->lexema = (char*) malloc(strlen((*item).lexema)*sizeof(char));
 		(*tree)->val->lexema = (*item).lexema;
 		(*tree)->val->valor = (*item).valor;
-		(*tree)->val = item;
 		return;
 	}
 	if(strcmp((*item).lexema,(*tree)->val->lexema)<0)
 		insertar(&(*tree)->left, item);
 	else if(strcmp((*item).lexema,(*tree)->val->lexema)>0)
 		insertar(&(*tree)->right, item);
-	/* Si es igual obviamente ya existe y no lo inserta de nuevo */
+	/* Si es igual obviamente ya existe y lo actualiza */
+	else if(!strcmp((*item).lexema,(*tree)->val->lexema)) {
+		(*tree)->val->valor = (*item).valor;
+	}
 }
 
 int existe(nodo ** tree, token * item) {
