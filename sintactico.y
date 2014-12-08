@@ -28,16 +28,17 @@ void yyerror(const char* s)
 %token <num> NUM
 %token <str> ID
 %type <num> exp
-%type <num> line
 %%
 
 input: /* vacio */
 	| input line
+
+line: '\n'		/* Salto de linea */
+	| exp ';' { printf("\t-> %g\n", $1); }
+	| quit
 ;
 
-line: exp		{ printf("\t-> %g\n", $1); $$=$1; }
-	| line ';'  {}
-	| line '\n' { printf("\t-> %g\n", $1); $$=$1; }
+quit: '@'	{ YYACCEPT; } /* Salir del programa */
 ;
 
 exp:  NUM			{ $$ = $1; 				}
@@ -72,12 +73,17 @@ int main (int argc, char** argv)
 {
 	++argv, --argc; /* Se salta el nombre del programa */
 	if (argc > 0) yyin = fopen(argv[0], "r");
-	else yyin = stdin;
+	else {
+		printf("\n ->Introduce las expresiones seguidas de un ';'\n");
+		printf(" ->Para finalizar introduce el caracter '@' y pulsa Intro\n\n");
+		yyin = stdin;
+	}
 
 	// inicializamos la tabla de simbolos
 	inicializarTabla();
 	// ejecutamos el analisis
 	yyparse();
 	// Imprime la tabla de simbolos
+	printf("-- Tabla de simbolos ---\n");
 	imprimirTabla();
 }

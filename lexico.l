@@ -39,6 +39,7 @@ ID		[a-z|A-Z][a-z0-9|A-Z0-9]*
 "^"			return(yytext[0]);		/* Elevar */
 "+"			return(yytext[0]);		/* Sumar */
 "-"			return(yytext[0]);		/* Restar */
+"@"			return(yytext[0]);		/* SALIR */
 [ \t]+ /* ignoro los espacios en blanco y tabulaciones */
 [\n]			   numlinea++; 		/* Cuento las lineas */
 
