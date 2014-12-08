@@ -46,7 +46,6 @@ typedef int16_t flex_int16_t;
 typedef uint16_t flex_uint16_t;
 typedef int32_t flex_int32_t;
 typedef uint32_t flex_uint32_t;
-typedef uint64_t flex_uint64_t;
 #else
 typedef signed char flex_int8_t;
 typedef short int flex_int16_t;
@@ -54,7 +53,6 @@ typedef int flex_int32_t;
 typedef unsigned char flex_uint8_t; 
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
-#endif /* ! C99 */
 
 /* Limits of integral types. */
 #ifndef INT8_MIN
@@ -84,6 +82,8 @@ typedef unsigned int flex_uint32_t;
 #ifndef UINT32_MAX
 #define UINT32_MAX             (4294967295U)
 #endif
+
+#endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
 
@@ -141,7 +141,15 @@ typedef unsigned int flex_uint32_t;
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k.
+ * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
+ * Ditto for the __ia64__ case accordingly.
+ */
+#define YY_BUF_SIZE 32768
+#else
 #define YY_BUF_SIZE 16384
+#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -153,12 +161,7 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
-
-extern yy_size_t yyleng;
+extern int yyleng;
 
 extern FILE *yyin, *yyout;
 
@@ -184,6 +187,11 @@ extern FILE *yyin, *yyout;
 
 #define unput(c) yyunput( c, (yytext_ptr)  )
 
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
 struct yy_buffer_state
@@ -201,7 +209,7 @@ struct yy_buffer_state
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	yy_size_t yy_n_chars;
+	int yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -271,8 +279,8 @@ static YY_BUFFER_STATE * yy_buffer_stack = 0; /**< Stack as an array. */
 
 /* yy_hold_char holds the character lost when yytext is formed. */
 static char yy_hold_char;
-static yy_size_t yy_n_chars;		/* number of characters read into yy_ch_buf */
-yy_size_t yyleng;
+static int yy_n_chars;		/* number of characters read into yy_ch_buf */
+int yyleng;
 
 /* Points to current character in buffer. */
 static char *yy_c_buf_p = (char *) 0;
@@ -300,7 +308,7 @@ static void yy_init_buffer (YY_BUFFER_STATE b,FILE *file  );
 
 YY_BUFFER_STATE yy_scan_buffer (char *base,yy_size_t size  );
 YY_BUFFER_STATE yy_scan_string (yyconst char *yy_str  );
-YY_BUFFER_STATE yy_scan_bytes (yyconst char *bytes,yy_size_t len  );
+YY_BUFFER_STATE yy_scan_bytes (yyconst char *bytes,int len  );
 
 void *yyalloc (yy_size_t  );
 void *yyrealloc (void *,yy_size_t  );
@@ -355,7 +363,7 @@ static void yy_fatal_error (yyconst char msg[]  );
  */
 #define YY_DO_BEFORE_ACTION \
 	(yytext_ptr) = yy_bp; \
-	yyleng = (yy_size_t) (yy_cp - yy_bp); \
+	yyleng = (size_t) (yy_cp - yy_bp); \
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
@@ -371,9 +379,9 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[24] =
     {   0,
-        0,    0,   17,   15,   14,   13,    5,    6,    8,   11,
-       12,    9,    3,    7,    4,    1,   10,   14,    0,    3,
-        1,    2,    0
+        0,    0,   17,   15,   13,   14,    5,    6,    8,   11,
+       12,    9,    1,    7,    4,    3,   10,   13,    0,    1,
+        3,    2,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -462,8 +470,17 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "lexico.l"
 #line 3 "lexico.l"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>	
+
+#include "sintactico.tab.h"
+
 int numlinea = 1; /* Lleva la cuenta de las lineas */
-#line 467 "lex.yy.c"
+
+#line 484 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -502,7 +519,7 @@ FILE *yyget_out (void );
 
 void yyset_out  (FILE * out_str  );
 
-yy_size_t yyget_leng (void );
+int yyget_leng (void );
 
 char *yyget_text (void );
 
@@ -544,7 +561,12 @@ static int input (void );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k */
+#define YY_READ_BUF_SIZE 16384
+#else
 #define YY_READ_BUF_SIZE 8192
+#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -552,7 +574,7 @@ static int input (void );
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO fwrite( yytext, yyleng, 1, yyout )
+#define ECHO do { if (fwrite( yytext, yyleng, 1, yyout )) {} } while (0)
 #endif
 
 /* Gets input and stuffs it into "buf".  number of characters read, or YY_NULL,
@@ -563,7 +585,7 @@ static int input (void );
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_is_interactive ) \
 		{ \
 		int c = '*'; \
-		yy_size_t n; \
+		size_t n; \
 		for ( n = 0; n < max_size && \
 			     (c = getc( yyin )) != EOF && c != '\n'; ++n ) \
 			buf[n] = (char) c; \
@@ -645,10 +667,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 9 "lexico.l"
+#line 19 "lexico.l"
 
 
-#line 652 "lex.yy.c"
+#line 674 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -733,86 +755,95 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 11 "lexico.l"
-return(yytext); 	/* Identificador */
+#line 21 "lexico.l"
+{
+	yylval.num = atof(yytext);
+	return NUM;
+}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 12 "lexico.l"
-return(yytext); 	/* Float */
+#line 25 "lexico.l"
+{
+	yylval.num = atof(yytext);
+	return NUM;
+}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 13 "lexico.l"
-return(yytext);		/* Entero */
+#line 29 "lexico.l"
+{
+	yylval.str = strdup(yytext);
+	return ID;
+}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 14 "lexico.l"
-return(yytext);		/* Asignacion */
+#line 33 "lexico.l"
+return(yytext[0]);		/* Asignacion */
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 15 "lexico.l"
-return(yytext);		/* Parentesis 1 */
+#line 34 "lexico.l"
+return(yytext[0]);		/* Parentesis 1 */
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 16 "lexico.l"
-return(yytext);		/* Parentesis 2 */
+#line 35 "lexico.l"
+return(yytext[0]);		/* Parentesis 2 */
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 17 "lexico.l"
-return(yytext);		/* Fin de expresion */
+#line 36 "lexico.l"
+return(yytext[0]);		/* Fin de expresion */
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 18 "lexico.l"
-return(yytext);		/* Multiplicar */
+#line 37 "lexico.l"
+return(yytext[0]);		/* Multiplicar */
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 19 "lexico.l"
-return(yytext);		/* Dividir */
+#line 38 "lexico.l"
+return(yytext[0]);		/* Dividir */
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 20 "lexico.l"
-return(yytext);		/* Elevar */
+#line 39 "lexico.l"
+return(yytext[0]);		/* Elevar */
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 21 "lexico.l"
-return(yytext);		/* Sumar */
+#line 40 "lexico.l"
+return(yytext[0]);		/* Sumar */
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 22 "lexico.l"
-return(yytext);		/* Restar */
+#line 41 "lexico.l"
+return(yytext[0]);		/* Restar */
 	YY_BREAK
 case 13:
-/* rule 13 can match eol */
 YY_RULE_SETUP
-#line 23 "lexico.l"
-numlinea++;		/* Salto de linea */
+#line 42 "lexico.l"
+/* ignoro los espacios en blanco y tabulaciones */
 	YY_BREAK
 case 14:
+/* rule 14 can match eol */
 YY_RULE_SETUP
-#line 24 "lexico.l"
-/* ignoro los espacios en blanco y tabulaciones */
+#line 43 "lexico.l"
+numlinea++; 		/* Cuento las lineas */
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 26 "lexico.l"
+#line 45 "lexico.l"
 printf(" -> Caracter '%s' no reconocido\n", yytext); /* No reconocido */
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 28 "lexico.l"
+#line 47 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 816 "lex.yy.c"
+#line 847 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -998,7 +1029,7 @@ static int yy_get_next_buffer (void)
 
 	else
 		{
-			yy_size_t num_to_read =
+			int num_to_read =
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
@@ -1012,7 +1043,7 @@ static int yy_get_next_buffer (void)
 
 			if ( b->yy_is_our_buffer )
 				{
-				yy_size_t new_size = b->yy_buf_size * 2;
+				int new_size = b->yy_buf_size * 2;
 
 				if ( new_size <= 0 )
 					b->yy_buf_size += b->yy_buf_size / 8;
@@ -1043,7 +1074,7 @@ static int yy_get_next_buffer (void)
 
 		/* Read in more data. */
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-			(yy_n_chars), num_to_read );
+			(yy_n_chars), (size_t) num_to_read );
 
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = (yy_n_chars);
 		}
@@ -1153,7 +1184,7 @@ static int yy_get_next_buffer (void)
 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		register yy_size_t number_to_move = (yy_n_chars) + 2;
+		register int number_to_move = (yy_n_chars) + 2;
 		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
 		register char *source =
@@ -1202,7 +1233,7 @@ static int yy_get_next_buffer (void)
 
 		else
 			{ /* need more input */
-			yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
+			int offset = (yy_c_buf_p) - (yytext_ptr);
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -1226,7 +1257,7 @@ static int yy_get_next_buffer (void)
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( yywrap( ) )
-						return 0;
+						return EOF;
 
 					if ( ! (yy_did_buffer_switch_on_eof) )
 						YY_NEW_FILE;
@@ -1478,7 +1509,7 @@ void yypop_buffer_state (void)
  */
 static void yyensure_buffer_stack (void)
 {
-	yy_size_t num_to_alloc;
+	int num_to_alloc;
     
 	if (!(yy_buffer_stack)) {
 
@@ -1570,16 +1601,17 @@ YY_BUFFER_STATE yy_scan_string (yyconst char * yystr )
 
 /** Setup the input buffer state to scan the given bytes. The next call to yylex() will
  * scan from a @e copy of @a bytes.
- * @param bytes the byte buffer to scan
- * @param len the number of bytes in the buffer pointed to by @a bytes.
+ * @param yybytes the byte buffer to scan
+ * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
  * 
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE yy_scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_len )
+YY_BUFFER_STATE yy_scan_bytes  (yyconst char * yybytes, int  _yybytes_len )
 {
 	YY_BUFFER_STATE b;
 	char *buf;
-	yy_size_t n, i;
+	yy_size_t n;
+	int i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = _yybytes_len + 2;
@@ -1661,7 +1693,7 @@ FILE *yyget_out  (void)
 /** Get the length of the current token.
  * 
  */
-yy_size_t yyget_leng  (void)
+int yyget_leng  (void)
 {
         return yyleng;
 }
@@ -1809,7 +1841,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 28 "lexico.l"
+#line 47 "lexico.l"
 
 
 

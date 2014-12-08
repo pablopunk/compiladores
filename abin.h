@@ -3,7 +3,7 @@
 struct info
 {
 	char* lexema;/* identificador */
-	int valor;	 /* valor de la variable */
+	double valor;/* valor de la variable */
 	int numero;  /* identificador */ 
 	int linea;   /* linea de codigo */
 };
@@ -21,3 +21,4 @@ void insertar(nodo ** tree, token * item);
 int existe(nodo ** tree, token * item);
 void imprimir(nodo * tree);
 void suprimir(nodo ** tree);
+double devolver(nodo ** tree, char* variable);

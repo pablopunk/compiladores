@@ -42,7 +42,7 @@ int existe(nodo ** tree, token * item) {
 
 void imprimir(nodo * tree) {
 	if(tree->left) imprimir(tree->left);
-	printf("%s := %d\n",tree->val->lexema,tree->val->valor);
+	printf("%s := %.2f\n",tree->val->lexema,tree->val->valor);
 	if(tree->right) imprimir(tree->right);
 }
 
@@ -52,4 +52,21 @@ void suprimir(nodo ** tree)
 	if((*tree)->right) suprimir(&(*tree)->right);
 	free (*tree);
 	*tree = NULL;
+}
+
+double devolver(nodo ** tree, char* variable)
+{
+	if (!(*tree)) {
+		printf("No se reconoce la variable %s\n", variable);
+		return 0;
+	}
+	if(!strcmp((*tree)->val->lexema,variable)) {
+		return (*tree)->val->valor;
+	}
+	if(strcmp(variable,(*tree)->val->lexema)<0)
+		return devolver(&(*tree)->left, variable);
+	else if(strcmp(variable,(*tree)->val->lexema)>0)
+		return devolver(&(*tree)->right, variable);
+
+	return 0;
 }
