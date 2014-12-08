@@ -5,6 +5,6 @@
 # Para ejecutar este debemos pasarle el archivo como argumento
 # o irlo tecleando en tiempo de ejecucion:
 
-make && ./compilador bisection.jl
+make && ./compilador entrada.txt
 
 ## Tambien se puede convertir este README en script y ejecutarlo
