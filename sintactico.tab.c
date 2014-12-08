@@ -439,7 +439,7 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    34,    34,    35,    38,    39,    40,    43,    44,    45,
-      46,    47,    48,    49,    50,    51,    52,    59
+      46,    47,    48,    49,    50,    51,    52,    60
 };
 #endif
 
@@ -1380,18 +1380,25 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 5:
+        case 4:
+
+/* Line 1806 of yacc.c  */
+#line 38 "sintactico.y"
+    { printf("\t-> %g\n", (yyvsp[(1) - (1)].num)); (yyval.num)=(yyvsp[(1) - (1)].num); }
+    break;
+
+  case 5:
 
 /* Line 1806 of yacc.c  */
 #line 39 "sintactico.y"
-    { printf("\t-> %g\n", (yyvsp[(1) - (2)].num)); }
+    {}
     break;
 
   case 6:
 
 /* Line 1806 of yacc.c  */
 #line 40 "sintactico.y"
-    { printf("\t-> %g\n", (yyvsp[(1) - (2)].num)); }
+    { printf("\t-> %g\n", (yyvsp[(1) - (2)].num)); (yyval.num)=(yyvsp[(1) - (2)].num); }
     break;
 
   case 7:
@@ -1467,13 +1474,14 @@ yyreduce:
 		strcpy(T->lexema, (yyvsp[(1) - (3)].str));
 		T->valor = (yyvsp[(3) - (3)].num);
 		insertarTabla(T);
+		(yyval.num) = (yyvsp[(3) - (3)].num);
 	}
     break;
 
   case 17:
 
 /* Line 1806 of yacc.c  */
-#line 59 "sintactico.y"
+#line 60 "sintactico.y"
     {
 		if (!strcmp((yyvsp[(1) - (4)].str), "sin")) {
 			(yyval.num) = sin((yyvsp[(3) - (4)].num));
@@ -1486,7 +1494,7 @@ yyreduce:
 
 
 /* Line 1806 of yacc.c  */
-#line 1490 "sintactico.tab.c"
+#line 1498 "sintactico.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1717,7 +1725,7 @@ yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 68 "sintactico.y"
+#line 69 "sintactico.y"
 
 
 int main (int argc, char** argv)

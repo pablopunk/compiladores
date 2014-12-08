@@ -35,9 +35,9 @@ input: /* vacio */
 	| input line
 ;
 
-line: exp
-	| line ';'  { printf("\t-> %g\n", $1); }
-	| line '\n' { printf("\t-> %g\n", $1); }
+line: exp		{ printf("\t-> %g\n", $1); $$=$1; }
+	| line ';'  {}
+	| line '\n' { printf("\t-> %g\n", $1); $$=$1; }
 ;
 
 exp:  NUM			{ $$ = $1; 				}
@@ -55,6 +55,7 @@ exp:  NUM			{ $$ = $1; 				}
 		strcpy(T->lexema, $1);
 		T->valor = $3;
 		insertarTabla(T);
+		$$ = $3;
 	}
 	| ID '(' exp ')' {
 		if (!strcmp($1, "sin")) {

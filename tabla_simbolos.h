@@ -16,3 +16,6 @@ int busquedaTabla(token * lexema);
 
 // Imprime la tabla de simbolos
 void imprimirTabla();
+
+// Devuelve el valor de la variable
+double obtenerValor(char* variable);
