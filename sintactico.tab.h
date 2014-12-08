@@ -37,8 +37,9 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     NUM = 258,
-     ID = 259
+     NEG = 258,
+     NUM = 259,
+     ID = 260
    };
 #endif
 
@@ -49,7 +50,7 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 24 "sintactico.y"
+#line 25 "sintactico.y"
 
 	char* str;
 	double num;
@@ -57,7 +58,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 61 "sintactico.tab.h"
+#line 62 "sintactico.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

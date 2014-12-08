@@ -20,6 +20,7 @@ void yyerror(const char* s)
 
 %left '-' '+'
 %left '*' '/'
+%left NEG
 %right '^'
 %union {
 	char* str;
@@ -47,7 +48,7 @@ exp:  NUM			{ $$ = $1; 				}
 	| exp '-' exp 	{ $$ = $1 - $3;			}
 	| exp '*' exp 	{ $$ = $1 * $3; 		}
 	| exp '/' exp 	{ $$ = $1 / $3; 		}
-	| '-' exp 		{ $$ = -$2;	   			}
+	| '-' exp  %prec NEG { $$ = -$2; 		}
 	| exp '^' exp 	{ $$ = pow($1, $3);		}
 	| '(' exp ')'	{ $$ = $2;				}
 	| ID '=' exp	{
