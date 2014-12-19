@@ -33,6 +33,7 @@ int main() {
     }
     gettimeofday(&final,  NULL); /* Fin del codigo */
 
+    printf("%f%f%f\n", A[6][6],B[6][6],C[5][5]);
     tiempo = (final.tv_sec-inicio.tv_sec+(final.tv_usec-inicio.tv_usec)/1.e6);
 
     printf("\n-> Tiempo: %f\n\n", tiempo);
