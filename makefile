@@ -1,2 +1,10 @@
 all:
-	gcc ej4.c -O1 -fomit-frame-pointer -masm=intel -o O1.out && gcc ej4.c -O1 -funroll-loops -fomit-frame-pointer -masm=intel -o funroll.out
+	make sin_inlining && make con_inlining
+O0:
+	gcc -o sin_inlining sin_inlining.c -O0 && gcc -o con_inlining con_inlining.c -O0
+O1:
+	gcc -o sin_inlining sin_inlining.c -O1 && gcc -o con_inlining con_inlining.c -O1
+O2:
+	gcc -o sin_inlining sin_inlining.c -O2 && gcc -o con_inlining con_inlining.c -O2
+O3:
+	gcc -o sin_inlining sin_inlining.c -O3 && gcc -o con_inlining con_inlining.c -O3
