@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#define N 1000000
+#define N 10000
 #define ITER 100
 
 int i,j;
