@@ -21,7 +21,6 @@ FILE* pFile = NULL; // puntero a archivo
 
 char* inicio; // Puntero al inicio del lexema
 char* delantero; // Puntero al caracter que estamos leyendo
-char* predelantero; // Puntero al caracter justo antes de delantero
 
 void cargarBuffer1()
 {
@@ -66,7 +65,7 @@ int leerArchivo()
 	// Cargo el primer buffer
 	cargarBuffer1();
 
-	inicio = predelantero = delantero = buffer1; // Inicio los punteros
+	inicio = delantero = buffer1; // Inicio los punteros
 
 	return 0;
 }
@@ -89,22 +88,10 @@ char siguienteCaracter()
 		if (esFinDeFichero()) {
 			return EOF; // Devolvemos fin de fichero
 		}
-		if (leyendoBuffer == 1) {
-			predelantero = buffer2+N; // ultima posicion
-		} else {
-			predelantero = buffer1+N; // ultima posicion
-		}
+
 		cargarBuffer(++leyendoBuffer); // siguiente buffer
 
-	} else { 
-		if (delantero == buffer1+1) { // delantero en segunda posicion
-			predelantero = buffer1; // salta de buffer
-		} else if (delantero == buffer2+1) {
-			predelantero = buffer2;
-		} else {
-			predelantero++; // continua en el buffer
-		}
-	}
+	} 
 
 	return *(delantero++); // retorno el contenido y lo avanzo
 }
