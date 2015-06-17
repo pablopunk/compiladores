@@ -10,13 +10,14 @@
 // Librerias propias
 #include "entrada.h"
 
-#define N 16		// tamanho de buffer
+#define N 1024		// tamanho de buffer
 #define FILEMODE "r" 	// modo lectura de archivo
 
 char nombreArchivo[64];
 char buffer1[N+1];
 char buffer2[N+1];
 int leyendoBuffer = 0; // buffer que estamos leyendo
+int flag = 0; // esta a 1 si ya esta cargado el siguiente buffer
 FILE* pFile = NULL; // puntero a archivo
 
 char* inicio; // Puntero al inicio del lexema
@@ -89,7 +90,12 @@ char siguienteCaracter()
 			return EOF; // Devolvemos fin de fichero
 		}
 
-		cargarBuffer(++leyendoBuffer); // siguiente buffer
+		if (!flag) {
+			cargarBuffer(++leyendoBuffer); // siguiente buffer
+		} else {
+			++leyendoBuffer; // avanzo de buffer sin cargarlo
+			flag = 0; // quito el flag
+		}
 		//printf("\nCargo buffer %i\n", leyendoBuffer);
 
 	} 
@@ -101,6 +107,20 @@ char siguienteCaracter()
 void marcarInicio()
 {
 	inicio = delantero;
+}
+
+// Funcion que retrasa el puntero delantero 1 posicion
+void retroceder()
+{
+	if (leyendoBuffer == 0 && delantero == buffer1) {
+		delantero = buffer2+N-1; // ultima posicion
+		flag = 1;
+	} else if (leyendoBuffer == 1 && delantero == buffer2) {
+		delantero = buffer1+N-1; // ultima posicion
+		flag = 1;
+	} else {
+		delantero--;
+	}
 }
 
 // Obtener lexema desde el puntero de inicio
@@ -122,8 +142,8 @@ char* lexemaActual()
 			return lexema;
 		}
 	}
-	if (leyendoBuffer == 1) inicio = buffer1; // salta de buffer
-	else inicio = buffer2; // salta de buffer
+	if (leyendoBuffer == 1) inicio = buffer2; // salta de buffer
+	else inicio = buffer1; // salta de buffer
 
 	while (inicio != delantero) {
 		lexema[i++] = *(inicio++);
