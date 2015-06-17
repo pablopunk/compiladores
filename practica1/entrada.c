@@ -10,7 +10,7 @@
 // Librerias propias
 #include "entrada.h"
 
-#define N 1024		// tamanho de buffer
+#define N 16		// tamanho de buffer
 #define FILEMODE "r" 	// modo lectura de archivo
 
 char nombreArchivo[64];
@@ -31,7 +31,7 @@ void cargarBuffer1()
 	buffer1[leidos] = EOF; // Fin de fichero si leidos<N / si no, es el fin del buffer (centinela)
 
 	// actualizo el puntero delantero
-	delantero = buffer2;
+	delantero = buffer1;
 }
 
 void cargarBuffer2()
@@ -90,6 +90,7 @@ char siguienteCaracter()
 		}
 
 		cargarBuffer(++leyendoBuffer); // siguiente buffer
+		//printf("\nCargo buffer %i\n", leyendoBuffer);
 
 	} 
 
