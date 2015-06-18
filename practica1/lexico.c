@@ -6,11 +6,12 @@
 // Librerias de C
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 // Librerias propias
 #include "entrada.h"
 #include "lexico.h"
-#include <string.h>
-#include <ctype.h>
+#include "definiciones.h"
 
 lexema * token;
 int lexemaSize=0;
@@ -235,7 +236,7 @@ void automataInicial()
 
 	switch(c)
 	{
-		case EOF: end = 1; token->numero = EOF; break; // end of file
+		case EOF: end = 1; break; // end of file
 		case ' ': estado = 0; lexemaSize--; break; // continuo
 		case '#': estado = 1; break; // inicio comentario
 		case '\n': numlinea++; end = 1; break; // fin de linea
@@ -268,6 +269,65 @@ void automataInicial()
 
 }
 
+int identificarLexema()
+{
+	if (strlen(token->string) == 1 && estado != 5) { // tamanho 1 y no es un id
+		return (int) token->string[0]; // codigo ascii
+	}
+
+	switch (estado){
+		case 5: case 6: case 8: case 11: {
+			if (!strcmp(token->string, "function")) {
+				return FUNCTION;
+			} else if (!strcmp(token->string, "if")) {
+				return IF;
+			} else if (!strcmp(token->string, "sign")) {
+				return SIGN;
+			} else if (!strcmp(token->string, "error")) {
+				return ERROR;
+			} else if (!strcmp(token->string, "end")) {
+				return END;
+			} else if (!strcmp(token->string, "while")) {
+				return WHILE;
+			} else if (!strcmp(token->string, "eps")) {
+				return EPS;
+			} else if (!strcmp(token->string, "return")) {
+				return RETURN;
+			} else if (!strcmp(token->string, "else")) {
+				return ELSE;
+			} else if (!strcmp(token->string, "try")) {
+				return TRY;
+			} else if (!strcmp(token->string, "catch")) {
+				return CATCH;
+			} else if (!strcmp(token->string, "println")) {
+				return PRINTLN;
+			} else if (!strcmp(token->string, "Inf")) {
+				return INF;
+			} else if (!strcmp(token->string, "//")) {
+				return FRACTION;
+			} else if (!strcmp(token->string, ">=")) {
+				return GREATEREQ;
+			} else if (!strcmp(token->string, "<=")) {
+				return LESSEQ;
+			} else if (!strcmp(token->string, "==")) {
+				return EQUALS;
+			} else if (!strcmp(token->string, "||")) {
+				return OR;
+			} else if (!strcmp(token->string, "=")) {
+				return '=';
+			}
+			break;
+		}
+		case 7: return STRING; break;
+		case 10: return HEX; break;
+		case 12: return INT; break;
+		case 13: return FLOAT; break;
+		default: return ID; break;
+	}
+
+	return ID;
+}
+
 // siguiente componente lexico
 lexema * siguienteLexema()
 {
@@ -297,7 +357,7 @@ lexema * siguienteLexema()
 
 	token->string = (char*) malloc(lexemaSize*sizeof(char));
 	token->string = lexemaActual();
-	if (token->numero != EOF) token->numero = 1;
+	token->numero = identificarLexema();
 	token->linea = numlinea;
 
 	return token;

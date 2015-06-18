@@ -26,4 +26,4 @@
 #define LESSEQ 276 // <=
 #define EQUALS 277 // == 
 #define HEX 278
-#define OR 279
+#define OR 279 // ||
