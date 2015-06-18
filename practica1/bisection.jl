@@ -1,3 +1,13 @@
+#=
+Función que realiza una búsqueda de raíces de funciones
+continuas según el método de dicotomía o bisección.
+
+Parámetros:
+ - f: Función objetivo.
+ - range: Tupla con dos valores numéricos que determinan
+   el rango de búsqueda de la raíz.
+ - nmax(opcional): Número máximo de iteraciones.
+=#
 function bisection(f, range, nmax=Inf)
   a, b = range
   if a >= b || sign(f(a)) == sign(f(b))

@@ -23,6 +23,17 @@ FILE* pFile = NULL; // puntero a archivo
 char* inicio; // Puntero al inicio del lexema
 char* delantero; // Puntero al caracter que estamos leyendo
 
+// Devuelve 1 si estamos en el fin del fichero
+int esFinDeFichero()
+{
+	if (feof(pFile)) {
+		fclose(pFile); // Cerramos el archivo
+		return 1;
+	}
+
+	return 0;
+}
+
 void cargarBuffer1()
 {
 	int leidos=0;
@@ -67,17 +78,6 @@ int leerArchivo()
 	cargarBuffer1();
 
 	inicio = delantero = buffer1; // Inicio los punteros
-
-	return 0;
-}
-
-// Devuelve 1 si estamos en el fin del fichero
-int esFinDeFichero()
-{
-	if (feof(pFile)) {
-		fclose(pFile); // Cerramos el archivo
-		return 1;
-	}
 
 	return 0;
 }

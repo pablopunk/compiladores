@@ -26,9 +26,12 @@ int main(int argc, char** argv)
 	inicializarLexico();
 	lexema * l = (lexema*) malloc(sizeof(lexema));
 
+	printf("-----\t----\t------\n");
 	printf("linea\t[id]\tlexema\n");
+	printf("-----\t----\t------\n");
 	while ( (l = siguienteLexema()) && (l->numero != EOF) ) { // mientras no sea EOF
-		if (l->string[0] != '\n') printf(" %i\t[%i]\t%s \n", l->linea, l->numero, l->string);
-		else printf(" %i\t[%i]\t\\n \n", l->linea-1, l->numero);
+		if (l->string[0] != '\n' && l->string[0] != '\t') printf(" %i\t[%i]\t%s \n", l->linea, l->numero, l->string);
+		else if (l->string[0] == '\t') printf(" %i\t[%i]\t\\t \n", l->linea, l->numero); // \n
+		else printf(" %i\t[%i]\t\\n \n", l->linea-1, l->numero); // \t
 	}
 }

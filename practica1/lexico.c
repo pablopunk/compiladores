@@ -129,7 +129,7 @@ void string()
 	switch(c)
 	{
 		case EOF: retroceder(); lexemaSize--; end = 1; break;
-		case '\n': numlinea++; break;
+		case '\n': break;
 		case '"': end = 1; break;
 		case '$': end = 1; lexemaEnString = 1; retroceder(); lexemaSize--; break;
 	}
@@ -182,7 +182,7 @@ void comentarioMonolinea()
 
 	switch(c)
 	{
-		case '\n': estado = 0; break; // fin de comentario
+		case '\n': estado = 0; retroceder(); break; // fin de comentario
 	}
 }
 
