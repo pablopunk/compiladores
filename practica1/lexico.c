@@ -104,7 +104,10 @@ void inicioHex()
 		case ' ': end = 1; retroceder(); lexemaSize--; break; // poner estado numerico???
 		case '\t': case '\n': end = 1; retroceder(); lexemaSize--; break; // poner estado numerico???
 		case 'x': estado = 10; break; // hexadecimal
+		case '.': estado = 13; break; // 0.
 	}
+
+	if (isdigit(c)) estado = 12;
 }
 
 // estado 8
