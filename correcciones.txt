@@ -1,8 +1,5 @@
 Práctica 1
 
-10. Recoñecemento incorrecto de algúns compoñentes léxicos. (operador ||, números con letras polo medio)
-16. A busca de lexema é redundante: búscase para identificar a súa presenza, e búscase tamén para a súa inserción. (se busca en la tabla y se vuelve a buscar para insertar, esto es fácil corregirlo: simplemente hay que meterlo, pero si existe ya no lo meterá)
-17. Uso inadecuado da táboa de símbolos, almacenándose lexemas non alfanuméricos: operadores, comparadores, cadeas de texto. (Só se almacena o lexema, e non o compoñente léxico) -> estructuras en ts (solo los IDS creo)
 
 23. A xestión de erros está acoplada. (Non hai xestión de erros).
 

@@ -9,6 +9,7 @@
 // Librerias propias
 #include "tabla_simbolos.h"
 #include "abin.h"
+#include "definiciones.h"
 
 nodo * raiz;
 
@@ -18,23 +19,23 @@ void inicializarTabla()
 	// Palabras reservadas
 	int maxsize = 32;
 	lexema * l = (lexema*) malloc(sizeof(lexema));
-	l->numero = 269; // ID
 	l->linea = -1; // Palabra reservada
 	l->string = (char*) malloc(maxsize*sizeof(char));
 
-	l->string = "function";		insertarTabla(l);
-	l->string = "if";			insertarTabla(l);
-	l->string = "sign";			insertarTabla(l);
-	l->string = "error";		insertarTabla(l);
-	l->string = "end";			insertarTabla(l);
-	l->string = "while";		insertarTabla(l);
-	l->string = "eps";			insertarTabla(l);
-	l->string = "return";		insertarTabla(l);
-	l->string = "else";			insertarTabla(l);
-	l->string = "try";			insertarTabla(l);
-	l->string = "catch";		insertarTabla(l);
-	l->string = "println";		insertarTabla(l);
-	l->string = "Inf";			insertarTabla(l);
+	l->string = "function"; l->numero = FUNCTION;	insertarTabla(l);
+	l->string = "if";		l->numero = IF;			insertarTabla(l);
+	l->string = "sign";		l->numero = SIGN;		insertarTabla(l);
+	l->string = "error";	l->numero = ERROR;		insertarTabla(l);
+	l->string = "end";		l->numero = END;		insertarTabla(l);
+	l->string = "while";	l->numero = WHILE;		insertarTabla(l);
+	l->string = "eps";		l->numero = EPS;		insertarTabla(l);
+	l->string = "return";	l->numero = RETURN;		insertarTabla(l);
+	l->string = "else";		l->numero = ELSE;		insertarTabla(l);
+	l->string = "try";		l->numero = TRY;		insertarTabla(l);
+	l->string = "catch";	l->numero = CATCH;		insertarTabla(l);
+	l->string = "println";	l->numero = PRINTLN;	insertarTabla(l);
+	l->string = "Inf";		l->numero = INF;		insertarTabla(l);
+	// podriamos seguir anhadiendo palabras reservadas
 }
 
 // Liberar memoria
