@@ -319,13 +319,22 @@ int identificarLexema()
 			} else if (!strcmp(token->string, "=")) {
 				return '=';
 			}
+
+			if (token->string[0] == '$') { // variable en string
+				token->string++; // borrar el $
+			}
+			if (token->string[strlen(token->string)-1] == '"') { // variable al finalizar string
+				token->string[strlen(token->string)-1] = 0; // borrar el " poniendo un '\0'
+			}
+
 			break;
 		}
 		case 7: return STRING; break;
 		case 10: return HEX; break;
 		case 12: return INT; break;
 		case 13: return FLOAT; break;
-		default: return ID; break;
+		default:
+		return ID; break;
 	}
 
 	return ID;

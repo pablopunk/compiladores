@@ -2,12 +2,17 @@
 //
 // Interfaz del analisis lexico
 //
+#ifndef LEXICO_H
+#define LEXICO_H
 
 typedef struct {
 	char* string;
 	int numero;
 	int linea;
-} lexema;
+} lexema; 
+
+#endif
+
 
 // Reservamos memoria
 void inicializarLexico();
