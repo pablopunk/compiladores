@@ -3,7 +3,9 @@
 // Interfaz del sistema de entrada
 //
 
-char nombreArchivo[64];
+
+// Inicializar el sistema de entrada
+void inicializarEntrada(char* fichero);
 
 // Funcion de lectura, devuelve 0 en caso de que no haya errores
 int leerArchivo();

@@ -8,7 +8,7 @@ Parámetros:
    el rango de búsqueda de la raíz.
  - nmax(opcional): Número máximo de iteraciones.
 =#
-function bisection(f, range, nmax=Inf)
+function bis(f, range, nmax=Inf)
   a, b = range
   if a >= b || sign(f(a)) == sign(f(b))
     error("El rango especificado no es válido")
@@ -34,9 +34,9 @@ f(x) = 0.03x^4-(1//3)x^3+x^2-15*x-8  #Definición del polinomio
 x1 = -4.0; x2 = 0x4
 nmax = 10
 try
-  sol = bisection(f, (x1, x2), nmax)
+  sol = bis(f, (x1, x2), nmax)
 catch e
   println("$nmax iteraciones no son suficientes")
 end
-sol = bisection(f, (x1, x2))
+sol = bis(f, (x1, x2))
 println("Solución encontrada en x=$sol")

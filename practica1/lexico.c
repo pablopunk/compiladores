@@ -21,6 +21,7 @@ int estado = 0; // control de los automatas
 int end = 0;
 int lexemaEnString = 0;
 int esperandoFinDeString = 0;
+int finDeFichero = 0;
 char c;
 
 void inicializarLexico()
@@ -131,7 +132,7 @@ void string()
 
 	switch(c)
 	{
-		case EOF: retroceder(); lexemaSize--; end = 1; break;
+		case EOF: finDeFichero = 1; end = 1; break;
 		case '\n': break;
 		case '"': end = 1; break;
 		case '$': end = 1; lexemaEnString = 1; retroceder(); lexemaSize--; break;
@@ -208,6 +209,7 @@ void inicioComentarioMultilinea()
 
 	switch(c)
 	{
+    case '\n': numlinea++; break;
 		case '=': estado = 3; break; // puede o no ser el fin del comentario
 	}
 }
@@ -239,7 +241,7 @@ void automataInicial()
 
 	switch(c)
 	{
-		case EOF: end = 1; break; // end of file
+		case EOF: finDeFichero = 1; end = 1; break; // end of file
 		case ' ': estado = 0; lexemaSize--; break; // continuo
 		case '#': estado = 1; break; // inicio comentario
 		case '\n': numlinea++; end = 1; break; // fin de linea
@@ -274,6 +276,13 @@ void automataInicial()
 
 int identificarLexema()
 {
+	if (strlen(token->string) == 1 && estado == 7) { // comilla inicial de un string con una variable despues
+    if (token->string[0]=='"') {
+      token = siguienteLexema();
+      return token->numero;
+    }
+  }
+
 	if (strlen(token->string) == 1 && estado != 5) { // tamanho 1 y no es un id
 		return (int) token->string[0]; // codigo ascii
 	}
@@ -329,7 +338,16 @@ int identificarLexema()
 
 			break;
 		}
-		case 7: return STRING; break;
+		case 7: 
+			if (token->string[0] == '"') { // comilla inicial
+				token->string++; // borrar
+			}
+
+			if (token->string[strlen(token->string)-1]=='"') { // comilla final
+				token->string[strlen(token->string)-1] = 0; // borrar
+			}
+
+			return STRING; break;
 		case 10: return HEX; break;
 		case 12: return INT; break;
 		case 13: return FLOAT; break;
@@ -367,9 +385,12 @@ lexema * siguienteLexema()
 		}
 	}
 
-	token->string = (char*) malloc(lexemaSize*sizeof(char));
-	token->string = lexemaActual();
-	token->numero = identificarLexema();
+  if (finDeFichero) token->numero = EOF;
+	else {
+    token->string = (char*) malloc(lexemaSize*sizeof(char));
+    token->string = lexemaActual();
+	  token->numero = identificarLexema();
+  }
 	token->linea = numlinea;
 
 	return token;

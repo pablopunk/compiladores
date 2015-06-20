@@ -10,10 +10,10 @@
 // Librerias propias
 #include "entrada.h"
 
-#define N 1024		// tamanho de buffer
+#define N 4096		// tamanho de buffer
 #define FILEMODE "r" 	// modo lectura de archivo
 
-char nombreArchivo[64];
+char* nombreArchivo;
 char buffer1[N+1];
 char buffer2[N+1];
 int leyendoBuffer = 0; // buffer que estamos leyendo
@@ -27,6 +27,7 @@ char* delantero; // Puntero al caracter que estamos leyendo
 int esFinDeFichero()
 {
 	if (feof(pFile)) {
+    //printf("Cerrando archivo...\n");
 		fclose(pFile); // Cerramos el archivo
 		return 1;
 	}
@@ -69,7 +70,7 @@ void cargarBuffer(int n)
 int leerArchivo()
 {
 	// Abro el archivo en modo lectura
-	if ( (pFile = fopen("bisection.jl", FILEMODE)) == NULL ) {
+	if ( (pFile = fopen(nombreArchivo, FILEMODE)) == NULL ) {
 		printf("Error al leer archivo '%s'\n", nombreArchivo);
 		return -1;
 	}
@@ -80,6 +81,13 @@ int leerArchivo()
 	inicio = delantero = buffer1; // Inicio los punteros
 
 	return 0;
+}
+
+// Inicializar el sistema de entrada
+void inicializarEntrada(char* fichero)
+{
+	nombreArchivo = fichero;
+	leerArchivo();
 }
 
 // Funcion que devuelve el siguiente caracter del buffer (-1 para EOF)
@@ -126,11 +134,10 @@ void retroceder()
 // Obtener lexema desde el puntero de inicio
 char* lexemaActual()
 {
-	int maxsize = 64;
+	int maxsize = N;
 	int real = 1;
 	char* lexema = (char*) malloc(maxsize * sizeof(char));
 	int i=0;
-
 	
 	while (*inicio != EOF) {
 		lexema[i++] = *(inicio++);

@@ -1,2 +1,2 @@
 all:
-	gcc -o compilador -g *.c
+	gcc -o compilador -g *.c -Wall
