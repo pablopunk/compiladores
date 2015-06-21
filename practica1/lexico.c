@@ -12,6 +12,7 @@
 #include "entrada.h"
 #include "lexico.h"
 #include "definiciones.h"
+#include "errores.h"
 
 lexema * token;
 int lexemaSize=0;
@@ -70,7 +71,7 @@ void or() // espero otro |
 	{
 		case '|': end = 1; break; // lei '||'
 		default: {
-			printf(" *Gestion de errores\n"); end = 1;
+			errorLexico(c, "Se esperaba otro '|'", numlinea); end = 1;
 		}
 	}
 }
@@ -81,15 +82,17 @@ void hex()
 	c = siguienteCaracter();
 	lexemaSize++;
 
+	
+
 	if (isalpha(c)) {
-		if ( (c >= 102 && c <= 97) || (c >= 70 && c <= 65) ) { // entre a-A y f-F
-			printf(" *Gestion de errores\n"); end = 1;
+		char h = tolower(c);
+		if ( h < 97 || h > 102) { // entre a-A y f-F
+			errorLexico(c, "Hexadecimal incorrecto", numlinea); end = 1;
 		}
 	} else {
 		switch (c) {
 			case ' ': end = 1; retroceder(); lexemaSize--; break;
 			case '\t': case '\n': end = 1; retroceder(); lexemaSize--; break; // poner estado numerico???
-			case 'x': estado = 10; break; // hexadecimal
 		}
 	}
 }
@@ -167,7 +170,7 @@ void alfanumerico()
 			if (lexemaEnString) {
 				end = 1; break;
 			} else {
-				printf(" *Gestion de errores\n");
+				errorLexico(c, "Caracter inesperado", numlinea);
 			}
 		}
 	}
@@ -253,7 +256,7 @@ void automataInicial()
 			if (lexemaEnString) {
 				estado = 5; break; // variable dentro de string
 			} else {
-				printf(" *Gestion de errores\n"); end = 1; break;
+				errorLexico(c, "Caracter no reconocido", numlinea); end = 1; break;
 			}
 		}
 		case '/': estado = 8; break; // puedo leer otro '/'
@@ -268,7 +271,7 @@ void automataInicial()
 			estado = 12;
 			break;
 		} else {
-			printf(" *Gestion de errores\n");
+			errorLexico(c, "Caracter no reconocido", numlinea);
 		}
 	}
 
@@ -277,13 +280,13 @@ void automataInicial()
 int identificarLexema()
 {
 	if (strlen(token->string) == 1 && estado == 7) { // comilla inicial de un string con una variable despues
-    if (token->string[0]=='"') {
-      token = siguienteLexema();
-      return token->numero;
-    }
-  }
+   	  	if (token->string[0]=='"') {
+        	token = siguienteLexema();
+      		return token->numero;
+    	}
+  	}
 
-	if (strlen(token->string) == 1 && estado != 5) { // tamanho 1 y no es un id
+	if (strlen(token->string) == 1 && estado != 5 && estado != 12) { // tamanho 1 y no es un id ni un int
 		return (int) token->string[0]; // codigo ascii
 	}
 
