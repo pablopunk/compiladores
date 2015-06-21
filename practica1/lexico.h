@@ -16,7 +16,7 @@ typedef struct {
 
 // Reservamos memoria
 void inicializarLexico();
-// liberamos memoria
+// Liberamos memoria
 void liberarLexico();
 // siguiente componente lexico
 lexema * siguienteLexema();

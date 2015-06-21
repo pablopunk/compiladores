@@ -13,18 +13,9 @@
 #include "tabla_simbolos.h"
 #include "definiciones.h"
 
-int main(int argc, char** argv) 
+// Analisis sintactico
+void analisisSintactico()
 {
-	++argv, --argc;  /* se salta el nombre del programa */
-	if (argc != 1) {
-		printf("Uso: ./compilador fichero.jl\n");
-		exit(0);
-	}
-
-	inicializarEntrada(argv[0]);
-	inicializarLexico();
-	inicializarTabla();
-
 	lexema * l = (lexema*) malloc(sizeof(lexema));
 
 	printf("-----\t----\t------\n");
@@ -43,6 +34,23 @@ int main(int argc, char** argv)
 	// Imprimir tabla
 	printf("\n--- Tabla de simbolos ---\n");
 	imprimirTabla();
+}
+
+int main(int argc, char** argv) 
+{
+	++argv, --argc;  /* se salta el nombre del programa */
+	if (argc != 1) {
+		printf("Uso: ./compilador fichero.jl\n");
+		exit(0);
+	}
+
+	inicializarEntrada(argv[0]);
+	inicializarLexico();
+	inicializarTabla();
+	analisisSintactico(); // analisis sintactico y lexico
+
+	liberarTabla();
+	liberarLexico();
 
   return 0;
 }

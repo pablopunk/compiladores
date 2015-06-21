@@ -29,6 +29,7 @@ int esFinDeFichero()
 	if (feof(pFile)) {
     //printf("Cerrando archivo...\n");
 		fclose(pFile); // Cerramos el archivo
+		pFile = NULL; free(pFile);
 		return 1;
 	}
 

@@ -3,4 +3,4 @@
 make && ./compilador bisection.jl # requiere make y gcc
 
 ## TODO
-- Implementar gestión de errores
+- Liberación de memoria al acabar

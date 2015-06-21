@@ -30,11 +30,13 @@ void inicializarLexico()
 	token = (lexema *) malloc(sizeof(lexema));
 }
 
+// Liberamos memoria
 void liberarLexico()
 {
-	free(token->string);
-	free(token);
+	token->string = NULL; free(token->string);
+	token = NULL; free(token);
 }
+
 //////////////////// AUTOMATAS ////////////////////
 
 // estado 13
