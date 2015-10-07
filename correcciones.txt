@@ -1,16 +1,17 @@
-Práctica 1
+- Un almacenamento pouco eficiente do lexema actual, realizando unhas tarefas 
+no analizador léxico e outras no sistema de entrada. Isto debería 
+implementarse dunha forma máis homoxénea e clara, evitando operacións 
+innecesarias.
 
+- Uso incorrecto da táboa de símbolos. Na implementación que nos 
+presentaches, a táboa de símbolos resulta ser unha estrutura inútil, pois nin 
+é empregada polo analizador léxico para distinguir os identificadores das 
+palabras reservadas, nin polo analizador sintáctico para obter información 
+adicional sobre o compoñente léxico actual (por exemplo, na táboa de símbolos 
+podería almacenarse a última liña na que apareceu un determinado 
+identificador). Ademais, a responsabilidade de engadir novos compoñentes á 
+táboa é do analizador léxico, e non do sintáctico.
 
-23. A xestión de erros está acoplada. (Non hai xestión de erros).
-
-Práctica 2
-2. Non se recoñecen identificadores en cadeas de texto. (lo del dolar supongo)
-29. Non se aproveita a táboa de símbolos para a identificación de palabras reservadas. (creo que no uso la tabla)
-
-Práctica 3
-1. Pouco máis se fai que o que se propón no manual. (e que ía faser?)
-2. Ofrécese unha escasa axuda ao usuario. (help everywhere)
-10. Non admite notación científica. (creo que 10e2 y cosas así)
-12. A identificación léxica de funcións non explota a táboa de símbolos.
-13. Conflitos redución-desprazamento, ou redución-redución. (ni papa de como arreglarlo)
-18. O analizador non é escalable mediante funcións de librería. (wwwwwwat?)
+- Un módulo de xestión de erros demasiado pobre. Conviría definir certos 
+códigos para distinguir os posibles tipos de erro que podemos atopar durante a 
+análise léxica.

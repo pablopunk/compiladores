@@ -8,7 +8,7 @@ Parámetros:
    el rango de búsqueda de la raíz.
  - nmax(opcional): Número máximo de iteraciones.
 =#
-function bis(f, range, nmax=Inf)
+function bisection(f, range, nmax=Inf)
   a, b = range
   if a >= b || sign(f(a)) == sign(f(b))
     error("El rango especificado no es válido")
