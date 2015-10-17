@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 // Imprimir error con un mensaje y la linea donde se produce
-void errorLexico(char actual, char* msg, int linea)
+void error(char actual, char* msg, int linea, int codigo)
 {
-	printf("* Error en la linea %i ['%c']: %s\n", linea, actual, msg);
+	printf("* Error #%i en la linea %i ['%c']: %s\n", codigo, linea, actual, msg);
 }

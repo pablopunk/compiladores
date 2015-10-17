@@ -60,7 +60,7 @@ void cargarBuffer2()
 	delantero = buffer2;
 }
 
-// Carga el buffer n 
+// Carga el buffer n
 void cargarBuffer(int n)
 {
 	if (n == 1) cargarBuffer2();
@@ -92,7 +92,7 @@ void inicializarEntrada(char* fichero)
 }
 
 // Funcion que devuelve el siguiente caracter del buffer (-1 para EOF)
-char siguienteCaracter()
+char siguienteEntrada()
 {
 	if (*delantero == EOF) {
 		if (esFinDeFichero()) {
@@ -107,12 +107,12 @@ char siguienteCaracter()
 		}
 		//printf("\nCargo buffer %i\n", leyendoBuffer);
 
-	} 
-
+	}
+	//printf("%c\n", *delantero);
 	return *(delantero++); // retorno el contenido y lo avanzo
 }
 
-// Funcion que marca el inicio del actual lexema a leer 
+// Funcion que marca el inicio del actual lexema a leer
 void marcarInicio()
 {
 	inicio = delantero;
@@ -139,7 +139,7 @@ char* lexemaActual()
 	int real = 1;
 	char* lexema = (char*) malloc(maxsize * sizeof(char));
 	int i=0;
-	
+
 	while (*inicio != EOF) {
 		lexema[i++] = *(inicio++);
 		if (i == maxsize) {
@@ -162,4 +162,3 @@ char* lexemaActual()
 
 	return lexema;
 }
-

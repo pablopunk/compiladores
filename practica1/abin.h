@@ -9,7 +9,7 @@ struct celda {
 
 typedef struct celda nodo;
 
-void insertar(nodo ** tree, lexema * item);
+int insertar(nodo ** tree, lexema * item);
 int existe(nodo ** tree, lexema * item);
 void imprimir(nodo * tree);
 void suprimir(nodo ** tree);

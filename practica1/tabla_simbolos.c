@@ -45,9 +45,9 @@ void liberarTabla()
 }
 
 // insertarar lexema en la tabla
-void insertarTabla(lexema * l)
+int insertarTabla(lexema * l)
 {
-	insertar(&raiz, l);
+	return insertar(&raiz, l);
 }
 
 // buscar lexema en la tabla (1 si esta, 0 si no)

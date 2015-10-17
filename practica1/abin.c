@@ -5,7 +5,7 @@
 
 #include "abin.h"
 
-void insertar(nodo ** tree, lexema * item) {
+int insertar(nodo ** tree, lexema * item) {
 	if(!(*tree)) {
 		*tree = (nodo *)malloc(sizeof(nodo));
 		(*tree)->left = (*tree)->right = NULL;
@@ -14,12 +14,14 @@ void insertar(nodo ** tree, lexema * item) {
 		(*tree)->val->string = item->string;
 		(*tree)->val->numero = item->numero;
 		(*tree)->val->linea = item->linea;
-		return;
+		return item->numero;
 	}
 	if(strcmp(item->string,(*tree)->val->string)<0)
-		insertar(&(*tree)->left, item);
+		return insertar(&(*tree)->left, item);
 	else if(strcmp(item->string,(*tree)->val->string)>0)
-		insertar(&(*tree)->right, item);
+		return insertar(&(*tree)->right, item);
+	else // ya existe en el arbol
+		return (*tree)->val->numero;
 }
 
 int existe(nodo ** tree, lexema * item) {

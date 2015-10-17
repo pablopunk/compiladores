@@ -13,17 +13,20 @@
 #include "lexico.h"
 #include "definiciones.h"
 #include "errores.h"
+#include "tabla_simbolos.h"
 
 lexema * token;
-int lexemaSize=0;
-int numlinea=1;
+int lexemaSize=0; // contador del tamanho actual del lexema
+size_t lexemaMax=8; // tamanho de la reserva de memoria para el lexema (aumentado x2 cuando hace falta)
+int numlinea=1; // contador de la linea actual
 
 int estado = 0; // control de los automatas
-int end = 0;
-int lexemaEnString = 0;
-int esperandoFinDeString = 0;
-int finDeFichero = 0;
-char c;
+int end = 0; // estado final cuando end=1
+int lexemaEnString = 0; // flag para saber si estamos analizando una variable alfanumerica dentro de un string ( "$var" )
+int esperandoFinDeString = 0; // flag para saber cuando he leido una variable en un string (sigo leyendo para acabar el string)
+int finDeFichero = 0; // cuando EOF
+
+char c; // caracter actual
 
 void inicializarLexico()
 {
@@ -37,27 +40,42 @@ void liberarLexico()
 	token = NULL; free(token);
 }
 
+// guarda el siguiente caracter en el lexema
+void siguienteCaracter() {
+	c = siguienteEntrada();
+	lexemaSize++;
+	if (lexemaSize == lexemaMax) { // vuelvo a reservar memoria para seguir almacenando
+		lexemaMax *= 2;
+		token->string = (char*) realloc(token->string, lexemaMax);
+	}
+	token->string[lexemaSize-1] = c; // guardo el caracter
+}
+
+// descargar el actual caracter (no queremos guardarlo)
+void descartarCaracter() {
+	if (lexemaSize > 0) lexemaSize--;
+	token->string[lexemaSize] = 0; // borrarlo
+}
+
 //////////////////// AUTOMATAS ////////////////////
 
 // estado 13
 void decimales()
 {
-	c = siguienteCaracter();
-	lexemaSize++;
+	siguienteCaracter();
 
 	if (!isdigit(c)) { // variable despues de numero u otro simbolo (*, -...)
-		end = 1; retroceder(); lexemaSize--; // si es un . dara error el primer automata
+		end = 1; retroceder(); descartarCaracter(); // si es un . dara error el primer automata
 	}
 }
 
 // estado 12
 void numero()
 {
-	c = siguienteCaracter();
-	lexemaSize++;
+	siguienteCaracter();
 
 	if (!isdigit(c) && c!='.') { // variable despues de numero u otro simbolo (*, -...)
-		end = 1; retroceder(); lexemaSize--;
+		end = 1; retroceder(); descartarCaracter();
 	} else if (c == '.') { // si es un . sigo leyendo el numero con decimales
 		estado = 13;
 	}
@@ -66,14 +84,13 @@ void numero()
 // estado 11
 void or() // espero otro |
 {
-	c = siguienteCaracter();
-	lexemaSize++;
+	siguienteCaracter();
 
 	switch(c)
 	{
 		case '|': end = 1; break; // lei '||'
 		default: {
-			errorLexico(c, "Se esperaba otro '|'", numlinea); end = 1;
+			error(c, "Se esperaba otro '|'", numlinea, CHAR_UNEXPECTED); end = 1;
 		}
 	}
 }
@@ -81,20 +98,17 @@ void or() // espero otro |
 // estado 10
 void hex()
 {
-	c = siguienteCaracter();
-	lexemaSize++;
-
-	
+	siguienteCaracter();
 
 	if (isalpha(c)) {
 		char h = tolower(c);
 		if ( h < 97 || h > 102) { // entre a-A y f-F
-			errorLexico(c, "Hexadecimal incorrecto", numlinea); end = 1;
+			error(c, "Hexadecimal incorrecto", numlinea, HEX_ERROR); end = 1;
 		}
 	} else {
 		switch (c) {
-			case ' ': end = 1; retroceder(); lexemaSize--; break;
-			case '\t': case '\n': end = 1; retroceder(); lexemaSize--; break; // poner estado numerico???
+			case ' ': end = 1; retroceder(); descartarCaracter(); break;
+			case '\t': case '\n': end = 1; retroceder(); descartarCaracter(); break; // poner estado numerico???
 		}
 	}
 }
@@ -102,13 +116,12 @@ void hex()
 // estado 9
 void inicioHex()
 {
-	c = siguienteCaracter();
-	lexemaSize++;
+	siguienteCaracter();
 
 	switch(c)
 	{
-		case ' ': end = 1; retroceder(); lexemaSize--; break; // poner estado numerico???
-		case '\t': case '\n': end = 1; retroceder(); lexemaSize--; break; // poner estado numerico???
+		case ' ': end = 1; retroceder(); descartarCaracter(); break; // poner estado numerico???
+		case '\t': case '\n': end = 1; retroceder(); descartarCaracter(); break; // poner estado numerico???
 		case 'x': estado = 10; break; // hexadecimal
 		case '.': estado = 13; break; // 0.
 	}
@@ -119,60 +132,56 @@ void inicioHex()
 // estado 8
 void fraccion() // espero un /
 {
-	c = siguienteCaracter();
-	lexemaSize++;
+	siguienteCaracter();
 
 	switch(c)
 	{
 		case '/': end = 1; break; // lei '//'
-		default: end = 1; retroceder(); lexemaSize--; break;
+		default: end = 1; retroceder(); descartarCaracter(); break;
 	}
 }
 
 // estado 7
 void string()
 {
-	c = siguienteCaracter();
-	lexemaSize++;
+	siguienteCaracter();
 
 	switch(c)
 	{
 		case EOF: finDeFichero = 1; end = 1; break;
 		case '\n': break;
 		case '"': end = 1; break;
-		case '$': end = 1; lexemaEnString = 1; retroceder(); lexemaSize--; break;
+		case '$': end = 1; lexemaEnString = 1; retroceder(); descartarCaracter(); break;
 	}
 }
 
 // estado 6
 void comparacion()
 {
-	c = siguienteCaracter();
-	lexemaSize++;
+	siguienteCaracter();
 
 	switch(c)
 	{
 		case '=': end = 1; break; // fin de la comparacion
-		default: end = 1; retroceder(); lexemaSize--; break; // era solo una comparacion de un caracter
+		default: end = 1; retroceder(); descartarCaracter(); break; // era solo una comparacion de un caracter
 	}
 }
 
 // estado 5
 void alfanumerico()
 {
-	c = siguienteCaracter();
-	lexemaSize++;
+	siguienteCaracter();
 
 	switch(c)
 	{
-		case ' ': end = 1; retroceder(); lexemaSize--; break;
-		case '\t': case '\n': end = 1; retroceder(); lexemaSize--; break;
-		case '(': case ')': case ',': case '+': case '-': case '*': case '^': case ';': case '=': case '<': case '>': lexemaSize--; retroceder(); end = 1; break;
+		case ' ': end = 1; retroceder(); descartarCaracter(); break;
+		case '\t': case '\n': end = 1; retroceder(); descartarCaracter(); break;
+		case '(': case ')': case ',': case '+': case '-': case '*': case '^': case ';': case '=': case '<': case '>': descartarCaracter(); retroceder(); end = 1; break;
 		case '"': {
 			if (lexemaEnString) {
-				end = 1; break;
+				end = 1; lexemaEnString=0; break;
 			} else {
-				errorLexico(c, "Caracter inesperado", numlinea);
+				error(c, "Caracter inesperado", numlinea, CHAR_UNEXPECTED);
 			}
 		}
 	}
@@ -187,7 +196,7 @@ void alfanumerico()
 // estado 4
 void comentarioMonolinea()
 {
-	c = siguienteCaracter();
+	c = siguienteEntrada(); // no forma parte de un lexema
 
 	switch(c)
 	{
@@ -198,7 +207,7 @@ void comentarioMonolinea()
 // estado 3
 void comentarioMultilinea()
 {
-	c = siguienteCaracter();
+	c = siguienteEntrada(); // no forma parte de un lexema
 
 	switch(c)
 	{
@@ -210,7 +219,7 @@ void comentarioMultilinea()
 // estado 2
 void inicioComentarioMultilinea()
 {
-	c = siguienteCaracter();
+	c = siguienteEntrada(); // no forma parte de un lexema
 
 	switch(c)
 	{
@@ -222,7 +231,7 @@ void inicioComentarioMultilinea()
 // estado 1
 void comentario()
 {
-	c = siguienteCaracter();
+	c = siguienteEntrada(); // no forma parte de un lexema
 
 	switch(c)
 	{
@@ -235,8 +244,7 @@ void comentario()
 void automataInicial()
 {
 	marcarInicio();
-	c = siguienteCaracter();
-	lexemaSize++;
+	siguienteCaracter();
 
 	if (esperandoFinDeString) { // he leido una variable en un string y ahora espero el final del mismo (")
 		estado = 7;
@@ -247,8 +255,8 @@ void automataInicial()
 	switch(c)
 	{
 		case EOF: finDeFichero = 1; end = 1; break; // end of file
-		case ' ': estado = 0; lexemaSize--; break; // continuo
-		case '#': estado = 1; break; // inicio comentario
+		case ' ': estado = 0; descartarCaracter(); break; // continuo
+		case '#': estado = 1; descartarCaracter(); break; // inicio comentario
 		case '\n': numlinea++; end = 1; break; // fin de linea
 		case '\t': end = 1; break; // tabulador
 		case '(': case ')': case ',': case '+': case '-': case '*': case '^': case ';': end = 1; break;
@@ -258,7 +266,7 @@ void automataInicial()
 			if (lexemaEnString) {
 				estado = 5; break; // variable dentro de string
 			} else {
-				errorLexico(c, "Caracter no reconocido", numlinea); end = 1; break;
+				error(c, "Caracter inesperado", numlinea, CHAR_UNEXPECTED); end = 1; break;
 			}
 		}
 		case '/': estado = 8; break; // puedo leer otro '/'
@@ -273,7 +281,7 @@ void automataInicial()
 			estado = 12;
 			break;
 		} else {
-			errorLexico(c, "Caracter no reconocido", numlinea);
+			error(c, "Caracter no reconocido", numlinea, CHAR_UNKNOWN);
 		}
 	}
 
@@ -281,6 +289,11 @@ void automataInicial()
 
 int identificarLexema()
 {
+	if (finDeFichero) {
+		token->numero = EOF;
+		return EOF;
+	}
+
 	if (strlen(token->string) == 1 && estado == 7) { // comilla inicial de un string con una variable despues
    	  	if (token->string[0]=='"') {
         	token = siguienteLexema();
@@ -293,34 +306,9 @@ int identificarLexema()
 	}
 
 	switch (estado){
-		case 5: case 6: case 8: case 11: {
-			if (!strcmp(token->string, "function")) {
-				return FUNCTION;
-			} else if (!strcmp(token->string, "if")) {
-				return IF;
-			} else if (!strcmp(token->string, "sign")) {
-				return SIGN;
-			} else if (!strcmp(token->string, "error")) {
-				return ERROR;
-			} else if (!strcmp(token->string, "end")) {
-				return END;
-			} else if (!strcmp(token->string, "while")) {
-				return WHILE;
-			} else if (!strcmp(token->string, "eps")) {
-				return EPS;
-			} else if (!strcmp(token->string, "return")) {
-				return RETURN;
-			} else if (!strcmp(token->string, "else")) {
-				return ELSE;
-			} else if (!strcmp(token->string, "try")) {
-				return TRY;
-			} else if (!strcmp(token->string, "catch")) {
-				return CATCH;
-			} else if (!strcmp(token->string, "println")) {
-				return PRINTLN;
-			} else if (!strcmp(token->string, "Inf")) {
-				return INF;
-			} else if (!strcmp(token->string, "//")) {
+			case 5: case 6: case 8: case 11: {
+
+			if (!strcmp(token->string, "//")) {
 				return FRACTION;
 			} else if (!strcmp(token->string, ">=")) {
 				return GREATEREQ;
@@ -330,20 +318,19 @@ int identificarLexema()
 				return EQUALS;
 			} else if (!strcmp(token->string, "||")) {
 				return OR;
-			} else if (!strcmp(token->string, "=")) {
-				return '=';
-			}
-
-			if (token->string[0] == '$') { // variable en string
-				token->string++; // borrar el $
-			}
-			if (token->string[strlen(token->string)-1] == '"') { // variable al finalizar string
-				token->string[strlen(token->string)-1] = 0; // borrar el " poniendo un '\0'
+			} else {
+				if (token->string[0] == '$') { // variable en string
+					token->string++; // borrar el $
+				}
+				if (token->string[strlen(token->string)-1] == '"') { // variable al finalizar string
+					token->string[strlen(token->string)-1] = 0; // borrar el " poniendo un '\0'
+				}
+				return insertarTabla(token); // comprueba si es un ID (y lo mete en la tabla si no existe) o una palabra reservada
 			}
 
 			break;
 		}
-		case 7: 
+		case 7:
 			if (token->string[0] == '"') { // comilla inicial
 				token->string++; // borrar
 			}
@@ -357,7 +344,8 @@ int identificarLexema()
 		case 12: return INT; break;
 		case 13: return FLOAT; break;
 		default:
-		return ID; break;
+			error(c, "No se reconoce el lexema", numlinea, LEX_UNKNOWN);
+			return ID;
 	}
 
 	return ID;
@@ -366,10 +354,12 @@ int identificarLexema()
 // siguiente componente lexico
 lexema * siguienteLexema()
 {
+	token->string = (char*) malloc(lexemaMax);
 	lexemaSize = 0; estado = 0; end = 0;
 
 	while (!end)
 	{
+		//printf ("-> estado: %i\n", estado);
 		switch(estado)
 		{
 			case 0: automataInicial(); break;
@@ -390,12 +380,7 @@ lexema * siguienteLexema()
 		}
 	}
 
-  if (finDeFichero) token->numero = EOF;
-	else {
-    token->string = (char*) malloc(lexemaSize*sizeof(char));
-    token->string = lexemaActual();
-	  token->numero = identificarLexema();
-  }
+	token->numero = identificarLexema();
 	token->linea = numlinea;
 
 	return token;
