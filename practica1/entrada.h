@@ -18,6 +18,3 @@ void marcarInicio();
 
 // Funcion que retrasa el puntero delantero 1 posicion
 void retroceder();
-
-// Obtener lexema desde el puntero de inicio hasta delantero
-char* lexemaActual();

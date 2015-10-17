@@ -131,34 +131,3 @@ void retroceder()
 		delantero--;
 	}
 }
-
-// Obtener lexema desde el puntero de inicio
-char* lexemaActual()
-{
-	int maxsize = N;
-	int real = 1;
-	char* lexema = (char*) malloc(maxsize * sizeof(char));
-	int i=0;
-
-	while (*inicio != EOF) {
-		lexema[i++] = *(inicio++);
-		if (i == maxsize) {
-			lexema = (char*) realloc(lexema, (real++) * maxsize * sizeof(char) );
-		}
-		if (inicio == delantero) {
-			lexema = (char*) realloc(lexema, i * sizeof(char) ); // cortar
-			return lexema;
-		}
-	}
-	if (leyendoBuffer == 1) inicio = buffer2; // salta de buffer
-	else inicio = buffer1; // salta de buffer
-
-	while (inicio != delantero) {
-		lexema[i++] = *(inicio++);
-		if (i == maxsize) {
-			lexema = (char*) realloc(lexema, (real++) * maxsize * sizeof(char) );
-		}
-	}
-
-	return lexema;
-}
