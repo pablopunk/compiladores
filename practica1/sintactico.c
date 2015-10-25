@@ -28,7 +28,10 @@ void analisisSintactico()
 	}
 
 	// Imprimir tabla
-	printf("\n--- Tabla de simbolos ---\n");
+	puts("");
+	printf("------- Tabla de simbolos ------\n");
+	printf("Identificador | Última aparición\n");
+	printf("--------------------------------\n");
 	imprimirTabla();
 }
 

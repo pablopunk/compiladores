@@ -20,8 +20,10 @@ int insertar(nodo ** tree, lexema * item) {
 		return insertar(&(*tree)->left, item);
 	else if(strcmp(item->string,(*tree)->val->string)>0)
 		return insertar(&(*tree)->right, item);
-	else // ya existe en el arbol
+	else { // ya existe en el arbol
+		(*tree)->val->linea = item->linea; // actualizar la ultima linea
 		return (*tree)->val->numero;
+	}
 }
 
 int existe(nodo ** tree, lexema * item) {
@@ -41,7 +43,7 @@ int existe(nodo ** tree, lexema * item) {
 
 void imprimir(nodo * tree) {
 	if(tree->left) imprimir(tree->left);
-	printf("%s\n",tree->val->string);
+	printf("%-22s%i\n",tree->val->string,tree->val->linea);
 	if(tree->right) imprimir(tree->right);
 }
 

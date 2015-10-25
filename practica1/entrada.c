@@ -106,7 +106,6 @@ char siguienteEntrada()
 			flag = 0; // quito el flag
 		}
 		//printf("\nCargo buffer %i\n", leyendoBuffer);
-
 	}
 	//printf("%c\n", *delantero);
 	return *(delantero++); // retorno el contenido y lo avanzo

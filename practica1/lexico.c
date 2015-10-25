@@ -295,41 +295,35 @@ int identificarLexema()
 	}
 
 	if (strlen(token->string) == 1 && estado == 7) { // comilla inicial de un string con una variable despues
-   	  	if (token->string[0]=='"') {
-        	token = siguienteLexema();
-      		return token->numero;
-    	}
-  	}
+ 	  	if (token->string[0]=='"') {
+      	token = siguienteLexema();
+    		return token->numero;
+  		}
+  }
 
 	if (strlen(token->string) == 1 && estado != 5 && estado != 12) { // tamanho 1 y no es un id ni un int
 		return (int) token->string[0]; // codigo ascii
 	}
 
 	switch (estado){
-			case 5: case 6: case 8: case 11: {
-
-			if (!strcmp(token->string, "//")) {
-				return FRACTION;
-			} else if (!strcmp(token->string, ">=")) {
-				return GREATEREQ;
-			} else if (!strcmp(token->string, "<=")) {
-				return LESSEQ;
-			} else if (!strcmp(token->string, "==")) {
-				return EQUALS;
-			} else if (!strcmp(token->string, "||")) {
-				return OR;
-			} else {
+			case 5:
 				if (token->string[0] == '$') { // variable en string
 					token->string++; // borrar el $
 				}
 				if (token->string[strlen(token->string)-1] == '"') { // variable al finalizar string
 					token->string[strlen(token->string)-1] = 0; // borrar el " poniendo un '\0'
 				}
+				token->numero = ID;
 				return insertarTabla(token); // comprueba si es un ID (y lo mete en la tabla si no existe) o una palabra reservada
-			}
+			case 6:
+				if (!strcmp(token->string, ">=")) return GREATEREQ;
+				if (!strcmp(token->string, "<=")) return LESSEQ;
+				if (!strcmp(token->string, "==")) return EQUALS;
+			case 8: return FRACTION;
+			case 11: return OR;
 
 			break;
-		}
+
 		case 7:
 			if (token->string[0] == '"') { // comilla inicial
 				token->string++; // borrar
@@ -354,8 +348,8 @@ int identificarLexema()
 // siguiente componente lexico
 lexema * siguienteLexema()
 {
-	token->string = (char*) malloc(lexemaMax);
-	lexemaSize = 0; estado = 0; end = 0;
+	lexemaMax = 8; lexemaSize = 0; estado = 0; end = 0;
+	token->string = (char*) calloc(1, lexemaMax); // reiniciamos el lexema
 
 	while (!end)
 	{
