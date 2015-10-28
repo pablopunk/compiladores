@@ -9,6 +9,7 @@
 #include <string.h>
 // Librerias propias
 #include "entrada.h"
+#include "errores.h"
 
 #define N 4096		// tamanho de buffer
 #define FILEMODE "r" 	// modo lectura de archivo
@@ -72,7 +73,7 @@ int leerArchivo()
 {
 	// Abro el archivo en modo lectura
 	if ( (pFile = fopen(nombreArchivo, FILEMODE)) == NULL ) {
-		printf("Error al leer archivo '%s'\n", nombreArchivo);
+		errorArchivo("Error al leer archivo\n", FILE_OPEN);
 		return -1;
 	}
 

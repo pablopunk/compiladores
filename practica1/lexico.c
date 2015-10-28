@@ -90,7 +90,7 @@ void or() // espero otro |
 	{
 		case '|': end = 1; break; // lei '||'
 		default: {
-			error(c, "Se esperaba otro '|'", numlinea, CHAR_UNEXPECTED); end = 1;
+			errorLexico(c, "Se esperaba otro '|'", numlinea, CHAR_UNEXPECTED); end = 1;
 		}
 	}
 }
@@ -103,7 +103,7 @@ void hex()
 	if (isalpha(c)) {
 		char h = tolower(c);
 		if ( h < 97 || h > 102) { // entre a-A y f-F
-			error(c, "Hexadecimal incorrecto", numlinea, HEX_ERROR); end = 1;
+			errorLexico(c, "Hexadecimal incorrecto", numlinea, HEX_ERROR); end = 1;
 		}
 	} else {
 		switch (c) {
@@ -181,7 +181,7 @@ void alfanumerico()
 			if (lexemaEnString) {
 				end = 1; lexemaEnString=0; break;
 			} else {
-				error(c, "Caracter inesperado", numlinea, CHAR_UNEXPECTED);
+				errorLexico(c, "Caracter inesperado", numlinea, CHAR_UNEXPECTED);
 			}
 		}
 	}
@@ -266,7 +266,7 @@ void automataInicial()
 			if (lexemaEnString) {
 				estado = 5; break; // variable dentro de string
 			} else {
-				error(c, "Caracter inesperado", numlinea, CHAR_UNEXPECTED); end = 1; break;
+				errorLexico(c, "Caracter inesperado", numlinea, CHAR_UNEXPECTED); end = 1; break;
 			}
 		}
 		case '/': estado = 8; break; // puedo leer otro '/'
@@ -281,7 +281,7 @@ void automataInicial()
 			estado = 12;
 			break;
 		} else {
-			error(c, "Caracter no reconocido", numlinea, CHAR_UNKNOWN);
+			errorLexico(c, "Caracter no reconocido", numlinea, CHAR_UNKNOWN);
 		}
 	}
 
@@ -338,7 +338,7 @@ int identificarLexema()
 		case 12: return INT; break;
 		case 13: return FLOAT; break;
 		default:
-			error(c, "No se reconoce el lexema", numlinea, LEX_UNKNOWN);
+			errorLexico(c, "No se reconoce el lexema", numlinea, LEX_UNKNOWN);
 			return ID;
 	}
 

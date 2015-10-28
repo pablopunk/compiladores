@@ -23,8 +23,8 @@ void analisisSintactico()
 	printf("-----\t----\t------\n");
 	while ( (l = siguienteLexema()) && (l->numero != EOF) ) { // mientras no sea EOF
 		if (l->string[0] != '\n' && l->string[0] != '\t') printf(" %i\t[%i]\t%s \n", l->linea, l->numero, l->string);
-		else if (l->string[0] == '\t') printf(" %i\t[%i]\t\\t \n", l->linea, l->numero); // \n
-		else printf(" %i\t[%i]\t\\n \n", l->linea-1, l->numero); // \t
+		else if (l->string[0] == '\t') printf(" %i\t[%i]\t\\t \n", l->linea, l->numero); // \t
+		else printf(" %i\t[%i]\t\\n \n", l->linea-1, l->numero); // \n
 	}
 
 	// Imprimir tabla
