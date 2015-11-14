@@ -1,0 +1,1 @@
+make && ./compilador bisection.jl
