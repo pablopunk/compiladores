@@ -29,6 +29,7 @@ void imprimirAyuda()
 
 %}
 
+%right '='
 %left '-' '+'
 %left '*' '/'
 %left NEG
