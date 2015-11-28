@@ -103,9 +103,13 @@ void yyerror(const char* s)
 void imprimirAyuda()
 {
 	puts("");
+	puts(" './calculadora -h' -> muestra este menú");
+	puts(" './calculadora archivo_entrada.txt' -> muestra la salida de los comandos");
+	puts("                                        y la tabla de simbolos final\n");
 	puts(" Introduce las operaciones y presiona Enter para ver el resultado");
-	puts(" Las operaciones acabadas en ';' ocultan el resultado ");
-	puts("   -> Ejemplo: z = 3e2 * sin (y + pi/6);");
+	puts(" (las operaciones acabadas en ';' ocultan el resultado)");
+	puts("   -> Ejemplo: 'z = 3e2 * sin (y + pi/6); y' -> opera sin mostrar el resultado");
+	puts("                                                e imprime el valor de y\n");
 	puts(" [Para finalizar introduce el caracter '@' y pulsa Enter]");
 	puts("");
 }
@@ -132,13 +136,13 @@ void imprimirAyuda()
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 37 "sintactico.y"
+#line 41 "sintactico.y"
 {
 	char* str;
 	double num;
 }
 /* Line 193 of yacc.c.  */
-#line 142 "sintactico.tab.c"
+#line 146 "sintactico.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -151,7 +155,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 155 "sintactico.tab.c"
+#line 159 "sintactico.tab.c"
 
 #ifdef short
 # undef short
@@ -439,8 +443,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    46,    46,    47,    49,    50,    51,    52,    55,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68
+       0,    50,    50,    51,    53,    54,    55,    56,    59,    62,
+      63,    64,    65,    66,    67,    68,    69,    70,    71,    72
 };
 #endif
 
@@ -1362,73 +1366,73 @@ yyreduce:
   switch (yyn)
     {
         case 5:
-#line 50 "sintactico.y"
+#line 54 "sintactico.y"
     { printf("> %g\n", (yyvsp[(1) - (2)].num)); ;}
     break;
 
   case 8:
-#line 55 "sintactico.y"
+#line 59 "sintactico.y"
     { YYACCEPT; ;}
     break;
 
   case 9:
-#line 58 "sintactico.y"
+#line 62 "sintactico.y"
     { (yyval.num) = (yyvsp[(1) - (1)].num); 				  ;}
     break;
 
   case 10:
-#line 59 "sintactico.y"
+#line 63 "sintactico.y"
     { (yyval.num) = obtenerValor((yyvsp[(1) - (1)].str)); ;}
     break;
 
   case 11:
-#line 60 "sintactico.y"
+#line 64 "sintactico.y"
     { insertarVariable((yyvsp[(1) - (3)].str), (yyvsp[(3) - (3)].num)); (yyval.num) = (yyvsp[(3) - (3)].num); ;}
     break;
 
   case 12:
-#line 61 "sintactico.y"
+#line 65 "sintactico.y"
     { info* f = buscarFuncion((yyvsp[(1) - (4)].str)); (yyval.num) = f->funcion((yyvsp[(3) - (4)].num)); ;}
     break;
 
   case 13:
-#line 62 "sintactico.y"
+#line 66 "sintactico.y"
     { (yyval.num) = (yyvsp[(1) - (3)].num) + (yyvsp[(3) - (3)].num);			;}
     break;
 
   case 14:
-#line 63 "sintactico.y"
+#line 67 "sintactico.y"
     { (yyval.num) = (yyvsp[(1) - (3)].num) - (yyvsp[(3) - (3)].num);			;}
     break;
 
   case 15:
-#line 64 "sintactico.y"
+#line 68 "sintactico.y"
     { (yyval.num) = (yyvsp[(1) - (3)].num) * (yyvsp[(3) - (3)].num); 		;}
     break;
 
   case 16:
-#line 65 "sintactico.y"
+#line 69 "sintactico.y"
     { (yyval.num) = (yyvsp[(1) - (3)].num) / (yyvsp[(3) - (3)].num); 		;}
     break;
 
   case 17:
-#line 66 "sintactico.y"
+#line 70 "sintactico.y"
     { (yyval.num) = -(yyvsp[(2) - (2)].num); 		;}
     break;
 
   case 18:
-#line 67 "sintactico.y"
+#line 71 "sintactico.y"
     { (yyval.num) = pow((yyvsp[(1) - (3)].num), (yyvsp[(3) - (3)].num));	;}
     break;
 
   case 19:
-#line 68 "sintactico.y"
+#line 72 "sintactico.y"
     { (yyval.num) = (yyvsp[(2) - (3)].num);					;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1432 "sintactico.tab.c"
+#line 1436 "sintactico.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1642,14 +1646,19 @@ yyreturn:
 }
 
 
-#line 71 "sintactico.y"
+#line 75 "sintactico.y"
 
 
 int main (int argc, char** argv)
 {
 	++argv, --argc; /* Se salta el nombre del programa */
-	if (argc > 0) yyin = fopen(argv[0], "r");
-	else {
+	if (argc > 0) {
+		if (!strcmp(argv[0],"-h")) {
+			imprimirAyuda(); exit(0);
+		} else {
+			yyin = fopen(argv[0], "r");
+		}
+	} else {
 		imprimirAyuda();
 		yyin = stdin;
 	}

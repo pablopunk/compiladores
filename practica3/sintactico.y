@@ -20,9 +20,13 @@ void yyerror(const char* s)
 void imprimirAyuda()
 {
 	puts("");
+	puts(" './calculadora -h' -> muestra este menú");
+	puts(" './calculadora archivo_entrada.txt' -> muestra la salida de los comandos");
+	puts("                                        y la tabla de simbolos final\n");
 	puts(" Introduce las operaciones y presiona Enter para ver el resultado");
-	puts(" Las operaciones acabadas en ';' ocultan el resultado ");
-	puts("   -> Ejemplo: z = 3e2 * sin (y + pi/6);");
+	puts(" (las operaciones acabadas en ';' ocultan el resultado)");
+	puts("   -> Ejemplo: 'z = 3e2 * sin (y + pi/6); y' -> opera sin mostrar el resultado");
+	puts("                                                e imprime el valor de y\n");
 	puts(" [Para finalizar introduce el caracter '@' y pulsa Enter]");
 	puts("");
 }
@@ -73,8 +77,13 @@ exp:  NUM					{ $$ = $1; 				  }
 int main (int argc, char** argv)
 {
 	++argv, --argc; /* Se salta el nombre del programa */
-	if (argc > 0) yyin = fopen(argv[0], "r");
-	else {
+	if (argc > 0) {
+		if (!strcmp(argv[0],"-h")) {
+			imprimirAyuda(); exit(0);
+		} else {
+			yyin = fopen(argv[0], "r");
+		}
+	} else {
 		imprimirAyuda();
 		yyin = stdin;
 	}

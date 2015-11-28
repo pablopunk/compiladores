@@ -54,7 +54,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 37 "sintactico.y"
+#line 41 "sintactico.y"
 {
 	char* str;
 	double num;
