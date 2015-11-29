@@ -21,6 +21,10 @@ void insertar(nodo ** tree, info * item) {
 		insertar(&(*tree)->left, item);
 	else if(strcmp(item->nombre,(*tree)->val->nombre)>0)
 		insertar(&(*tree)->right, item);
+	else { // ya existe y actualizamos el valor
+		if (item->tipo == 'v') (*tree)->val->valor = item->valor;
+		else if (item->tipo == 'f') (*tree)->val->funcion = item->funcion;
+	}
 }
 
 // buscar variable en la tabla
