@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/time.h>
 
 #define Nmax 600
@@ -15,6 +16,7 @@ int main()
   double tiempo;
   int i, j, k;
   float A[Nmax][Nmax], B[Nmax][Nmax], C[Nmax][Nmax], t, r;
+  FILE* fp = fopen("/dev/null", "w");
 
   gettimeofday(&inicio, NULL); // inicio de codigo a medir
 
@@ -38,7 +40,8 @@ int main()
 
   tiempo = (final.tv_sec - inicio.tv_sec + (final.tv_usec - inicio.tv_usec)/1.e6);
 
-  printf("%f", tiempo);
+  fprintf(fp, "%f\n", C[i][j]); // uso un resultado para evitar optimizaciones forzosas
+  printf("%.f", tiempo*1e6);
 
   return 0;
 }
