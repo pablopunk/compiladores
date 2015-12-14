@@ -40,8 +40,10 @@ int main()
 
   tiempo = (final.tv_sec - inicio.tv_sec + (final.tv_usec - inicio.tv_usec)/1.e6);
 
-  fprintf(fp, "%f\n", C[i][j]); // uso un resultado para evitar optimizaciones forzosas
+  printf("%f\n", C[i][j]); // uso un resultado para evitar optimizaciones forzosas
   printf("%.f", tiempo*1e6);
+
+  fclose(fp);
 
   return 0;
 }
