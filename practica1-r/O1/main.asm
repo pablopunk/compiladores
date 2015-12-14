@@ -3,13 +3,13 @@
 	.globl	producto
 	.type	producto, @function
 producto:
-.LFB39:
+.LFB38:
 	.cfi_startproc
 	mulss	%xmm0, %xmm1
 	movss	%xmm1, (%rdi)
 	ret
 	.cfi_endproc
-.LFE39:
+.LFE38:
 	.size	producto, .-producto
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .LC1:
@@ -17,20 +17,23 @@ producto:
 .LC2:
 	.string	"/dev/null"
 .LC6:
-	.string	"%f\n"
+	.string	"%f%f%f\n"
 .LC7:
 	.string	"%.f"
 	.text
 	.globl	main
 	.type	main, @function
 main:
-.LFB40:
+.LFB39:
 	.cfi_startproc
 	pushq	%rbx
 	.cfi_def_cfa_offset 16
 	.cfi_offset 3, -16
-	subq	$4320048, %rsp
-	.cfi_def_cfa_offset 4320064
+	subq	$4320064, %rsp
+	.cfi_def_cfa_offset 4320080
+	movq	%fs:40, %rax
+	movq	%rax, 4320056(%rsp)
+	xorl	%eax, %eax
 	movl	$.LC1, %esi
 	movl	$.LC2, %edi
 	call	fopen
@@ -38,109 +41,120 @@ main:
 	movl	$0, %esi
 	leaq	16(%rsp), %rdi
 	call	gettimeofday
-	movl	$0, %r10d
-	movl	$0, %eax
+	leaq	48(%rsp), %rdi
+	leaq	1440048(%rsp), %r9
+	movq	%rdi, %r8
+	movl	$0, %esi
 	movsd	.LC3(%rip), %xmm4
 	movsd	.LC4(%rip), %xmm3
 	jmp	.L3
-.L7:
+.L4:
+	pxor	%xmm1, %xmm1
+	cvtsi2sd	%eax, %xmm1
+	leal	(%rax,%rsi), %edx
+	pxor	%xmm0, %xmm0
 	cvtsi2sd	%edx, %xmm0
-	leaq	48(%rsp), %rsi
-	leal	(%rax,%rdx), %ecx
-	cvtsi2sd	%ecx, %xmm1
-	movapd	%xmm0, %xmm2
+	movapd	%xmm1, %xmm2
 	addsd	%xmm4, %xmm2
-	divsd	%xmm2, %xmm1
-	unpcklpd	%xmm1, %xmm1
-	cvtpd2ps	%xmm1, %xmm5
-	movss	%xmm5, (%r9,%rdx,4)
-	leaq	1440048(%rsp), %rdi
-	movl	%eax, %ecx
-	subl	%edx, %ecx
-	cvtsi2sd	%ecx, %xmm1
-	addsd	%xmm3, %xmm0
-	divsd	%xmm0, %xmm1
-	movapd	%xmm1, %xmm0
-	unpcklpd	%xmm0, %xmm0
-	cvtpd2ps	%xmm0, %xmm6
-	movss	%xmm6, (%r8,%rdx,4)
-	addq	$1, %rdx
-	cmpq	$600, %rdx
-	jne	.L7
+	divsd	%xmm2, %xmm0
+	cvtsd2ss	%xmm0, %xmm5
+	movss	%xmm5, (%r8,%rcx)
+	movl	%esi, %edx
+	subl	%eax, %edx
+	pxor	%xmm0, %xmm0
+	cvtsi2sd	%edx, %xmm0
+	addsd	%xmm3, %xmm1
+	divsd	%xmm1, %xmm0
+	cvtsd2ss	%xmm0, %xmm6
+	movss	%xmm6, (%r9,%rcx)
 	addl	$1, %eax
-	addq	$2400, %r10
+	addq	$4, %rcx
 	cmpl	$600, %eax
+	jne	.L4
+	addl	$1, %esi
+	addq	$2400, %r8
+	addq	$2400, %r9
+	cmpl	$600, %esi
 	jne	.L3
-	leaq	2880048(%rsp), %rax
-	leaq	4320048(%rsp), %r9
-	xorps	%xmm2, %xmm2
-	jmp	.L6
+	leaq	2882448(%rsp), %r8
+	leaq	1440048(%rsp), %r9
+	jmp	.L5
 .L3:
-	movl	$0, %edx
-	leaq	48(%rsp), %rdi
-	leaq	(%r10,%rdi), %r9
-	leaq	1440048(%rsp), %rdi
-	leaq	(%r10,%rdi), %r8
-	jmp	.L7
-.L10:
-	movss	(%rcx), %xmm1
-	mulss	(%rsi,%rdx), %xmm1
-	addss	%xmm1, %xmm0
-	addq	$2400, %rcx
-	addq	$4, %rdx
-	cmpq	$2400, %rdx
-	jne	.L10
-	movss	%xmm0, (%rax,%r8)
-	addq	$4, %r8
-	cmpq	$2400, %r8
-	je	.L9
-.L12:
-	leaq	(%rdi,%r8), %rcx
-	movl	$0, %edx
-	movaps	%xmm2, %xmm0
-	jmp	.L10
-.L9:
-	addq	$2400, %rax
-	addq	$2400, %rsi
-	cmpq	%r9, %rax
-	je	.L11
+	movl	$0, %ecx
+	movl	$0, %eax
+	jmp	.L4
 .L6:
-	movl	$0, %r8d
-	jmp	.L12
-.L11:
+	movss	(%rax), %xmm0
+	mulss	(%rdx), %xmm0
+	addss	%xmm0, %xmm1
+	addq	$2400, %rax
+	addq	$4, %rdx
+	cmpq	%rax, %rcx
+	jne	.L6
+	movss	%xmm1, (%rsi)
+	addq	$4, %rsi
+	addq	$4, %rcx
+	cmpq	%rsi, %r8
+	je	.L7
+.L9:
+	leaq	-1440000(%rcx), %rax
+	movq	%rdi, %rdx
+	pxor	%xmm1, %xmm1
+	jmp	.L6
+.L7:
+	addq	$2400, %r8
+	addq	$2400, %rdi
+	cmpq	%rdi, %r9
+	je	.L8
+.L5:
+	leaq	-2400(%r8), %rsi
+	leaq	2880048(%rsp), %rcx
+	jmp	.L9
+.L8:
 	movl	$0, %esi
 	leaq	32(%rsp), %rdi
 	call	gettimeofday
-	movq	32(%rsp), %rax
-	subq	16(%rsp), %rax
-	cvtsi2sdq	%rax, %xmm1
 	movq	40(%rsp), %rax
 	subq	24(%rsp), %rax
+	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rax, %xmm0
 	divsd	.LC5(%rip), %xmm0
-	addsd	%xmm0, %xmm1
-	movsd	%xmm1, 8(%rsp)
-	movss	4322448(%rsp), %xmm0
-	cvtps2pd	%xmm0, %xmm0
+	movq	32(%rsp), %rax
+	subq	16(%rsp), %rax
+	pxor	%xmm1, %xmm1
+	cvtsi2sdq	%rax, %xmm1
+	addsd	%xmm1, %xmm0
+	movsd	%xmm0, 8(%rsp)
+	cvtss2sd	1440044(%rsp), %xmm0
+	cvtss2sd	4320044(%rsp), %xmm2
+	cvtss2sd	2880044(%rsp), %xmm1
 	movl	$.LC6, %edx
 	movl	$1, %esi
 	movq	%rbx, %rdi
-	movl	$1, %eax
+	movl	$3, %eax
 	call	__fprintf_chk
-	movsd	.LC5(%rip), %xmm0
-	mulsd	8(%rsp), %xmm0
+	movsd	.LC5(%rip), %xmm3
+	mulsd	8(%rsp), %xmm3
+	movapd	%xmm3, %xmm0
 	movl	$.LC7, %esi
 	movl	$1, %edi
 	movl	$1, %eax
 	call	__printf_chk
+	movq	%rbx, %rdi
+	call	fclose
 	movl	$0, %eax
-	addq	$4320048, %rsp
+	movq	4320056(%rsp), %rbx
+	xorq	%fs:40, %rbx
+	je	.L10
+	call	__stack_chk_fail
+.L10:
+	addq	$4320064, %rsp
 	.cfi_def_cfa_offset 16
 	popq	%rbx
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE40:
+.LFE39:
 	.size	main, .-main
 	.section	.rodata.cst8,"aM",@progbits,8
 	.align 8
@@ -155,5 +169,5 @@ main:
 .LC5:
 	.long	0
 	.long	1093567616
-	.ident	"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04) 4.8.4"
+	.ident	"GCC: (Ubuntu 5.2.1-22ubuntu2) 5.2.1 20151010"
 	.section	.note.GNU-stack,"",@progbits

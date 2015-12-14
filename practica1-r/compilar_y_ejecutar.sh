@@ -32,35 +32,37 @@ gcc -Os main.c -o OS/bin
 
 ## resultados
 # Ejecucion
-echo "Tiempo ejecución;\c" >> resultados/2h.csv
-./O0/bin >> resultados/2h.csv
-echo ";\c" >> resultados/2h.csv
-./O1/bin >> resultados/2h.csv
-echo ";\c" >> resultados/2h.csv
-./O2/bin >> resultados/2h.csv
-echo ";\c" >> resultados/2h.csv
-./O3/bin >> resultados/2h.csv
-echo ";\c" >> resultados/2h.csv
-./OS/bin >> resultados/2h.csv
+echo -n "Tiempo ejecución;" >> resultados/2h.csv
+./O0/bin | xargs echo -n >> resultados/2h.csv
+echo -n ";" >> resultados/2h.csv
+./O1/bin | xargs echo -n >> resultados/2h.csv
+echo -n ";" >> resultados/2h.csv
+./O2/bin | xargs echo -n >> resultados/2h.csv
+echo -n ";" >> resultados/2h.csv
+./O3/bin | xargs echo -n >> resultados/2h.csv
+echo -n ";" >> resultados/2h.csv
+./OS/bin | xargs echo -n >> resultados/2h.csv
 # Tamaño codigo objeto
-echo "\nTamaño c. objeto;\c" >> resultados/2h.csv
+echo >> resultados/2h.csv
+echo -n "Tamaño c. objeto;" >> resultados/2h.csv
 ls -l O0/main.o | cut -d' ' -f5 | xargs echo -n >> resultados/2h.csv
-echo ";\c" >> resultados/2h.csv
+echo -n ";" >> resultados/2h.csv
 ls -l O1/main.o | cut -d' ' -f5 | xargs echo -n >> resultados/2h.csv
-echo ";\c" >> resultados/2h.csv
+echo -n ";" >> resultados/2h.csv
 ls -l O2/main.o | cut -d' ' -f5 | xargs echo -n >> resultados/2h.csv
-echo ";\c" >> resultados/2h.csv
+echo -n ";" >> resultados/2h.csv
 ls -l O3/main.o | cut -d' ' -f5 | xargs echo -n >> resultados/2h.csv
-echo ";\c" >> resultados/2h.csv
+echo -n ";" >> resultados/2h.csv
 ls -l OS/main.o | cut -d' ' -f5 | xargs echo -n >> resultados/2h.csv
 # Tamaño codigo objeto
-echo "\nTamaño static bin;\c" >> resultados/2h.csv
+echo >> resultados/2h.csv
+echo -n "Tamaño static bin;" >> resultados/2h.csv
 ls -l O0/bin_static | cut -d' ' -f5 | xargs echo -n >> resultados/2h.csv
-echo ";\c" >> resultados/2h.csv
+echo -n ";" >> resultados/2h.csv
 ls -l O1/bin_static | cut -d' ' -f5 | xargs echo -n >> resultados/2h.csv
-echo ";\c" >> resultados/2h.csv
+echo -n ";" >> resultados/2h.csv
 ls -l O2/bin_static | cut -d' ' -f5 | xargs echo -n >> resultados/2h.csv
-echo ";\c" >> resultados/2h.csv
+echo -n ";" >> resultados/2h.csv
 ls -l O3/bin_static | cut -d' ' -f5 | xargs echo -n >> resultados/2h.csv
-echo ";\c" >> resultados/2h.csv
+echo -n ";" >> resultados/2h.csv
 ls -l OS/bin_static | cut -d' ' -f5 | xargs echo -n >> resultados/2h.csv
