@@ -1,221 +1,159 @@
-	.section	__TEXT,__text,regular,pure_instructions
-	.macosx_version_min 10, 11
-	.globl	_producto
-	.align	4, 0x90
-_producto:                              ## @producto
+	.file	"main.c"
+	.text
+	.globl	producto
+	.type	producto, @function
+producto:
+.LFB39:
 	.cfi_startproc
-## BB#0:
-	pushq	%rbp
-Ltmp0:
-	.cfi_def_cfa_offset 16
-Ltmp1:
-	.cfi_offset %rbp, -16
-	movq	%rsp, %rbp
-Ltmp2:
-	.cfi_def_cfa_register %rbp
-	mulss	%xmm1, %xmm0
-	movss	%xmm0, (%rdi)
-	popq	%rbp
-	retq
+	mulss	%xmm0, %xmm1
+	movss	%xmm1, (%rdi)
+	ret
 	.cfi_endproc
-
-	.section	__TEXT,__literal8,8byte_literals
-	.align	3
-LCPI1_0:
-	.quad	4607632778762754458     ## double 1.1000000000000001
-LCPI1_1:
-	.quad	4611911198408756429     ## double 2.1000000000000001
-LCPI1_2:
-	.quad	4696837146684686336     ## double 1.0E+6
-	.section	__TEXT,__text,regular,pure_instructions
-	.globl	_main
-	.align	4, 0x90
-_main:                                  ## @main
+.LFE39:
+	.size	producto, .-producto
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC1:
+	.string	"w"
+.LC2:
+	.string	"/dev/null"
+.LC6:
+	.string	"%f\n"
+.LC7:
+	.string	"%.f"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB40:
 	.cfi_startproc
-## BB#0:
-	pushq	%rbp
-Ltmp3:
-	.cfi_def_cfa_offset 16
-Ltmp4:
-	.cfi_offset %rbp, -16
-	movq	%rsp, %rbp
-Ltmp5:
-	.cfi_def_cfa_register %rbp
-	pushq	%r15
-	pushq	%r14
-	pushq	%r13
-	pushq	%r12
 	pushq	%rbx
-	subq	$4320072, %rsp          ## imm = 0x41EB48
-Ltmp6:
-	.cfi_offset %rbx, -56
-Ltmp7:
-	.cfi_offset %r12, -48
-Ltmp8:
-	.cfi_offset %r13, -40
-Ltmp9:
-	.cfi_offset %r14, -32
-Ltmp10:
-	.cfi_offset %r15, -24
-	movq	___stack_chk_guard@GOTPCREL(%rip), %rax
-	movq	(%rax), %rax
-	movq	%rax, -48(%rbp)
-	leaq	L_.str(%rip), %rdi
-	leaq	L_.str1(%rip), %rsi
-	callq	_fopen
-	movq	%rax, -4320112(%rbp)    ## 8-byte Spill
-	xorl	%eax, %eax
-	movq	%rax, -4320104(%rbp)    ## 8-byte Spill
-	leaq	-4320064(%rbp), %rdi
-	xorl	%esi, %esi
-	callq	_gettimeofday
-	leaq	-1440048(%rbp), %r12
-	leaq	-2880048(%rbp), %r8
-	movsd	LCPI1_0(%rip), %xmm0    ## xmm0 = mem[0],zero
-	movsd	LCPI1_1(%rip), %xmm1    ## xmm1 = mem[0],zero
-	movq	%r12, %r9
-	xorl	%edx, %edx
-	.align	4, 0x90
-LBB1_1:                                 ## %.preheader3
-                                        ## =>This Loop Header: Depth=1
-                                        ##     Child Loop BB1_2 Depth 2
-	movl	%edx, %esi
-	movq	%r8, %rdi
-	movq	%r9, %rcx
-	xorl	%eax, %eax
-	.align	4, 0x90
-LBB1_2:                                 ##   Parent Loop BB1_1 Depth=1
-                                        ## =>  This Inner Loop Header: Depth=2
-	leal	(%rdx,%rax), %ebx
+	.cfi_def_cfa_offset 16
+	.cfi_offset 3, -16
+	subq	$4320048, %rsp
+	.cfi_def_cfa_offset 4320064
+	movl	$.LC1, %esi
+	movl	$.LC2, %edi
+	call	fopen
+	movq	%rax, %rbx
+	movl	$0, %esi
+	leaq	16(%rsp), %rdi
+	call	gettimeofday
+	movl	$0, %r10d
+	movl	$0, %eax
+	movsd	.LC3(%rip), %xmm4
+	movsd	.LC4(%rip), %xmm3
+	jmp	.L3
+.L7:
+	cvtsi2sd	%edx, %xmm0
+	leaq	48(%rsp), %rsi
+	leal	(%rax,%rdx), %ecx
+	cvtsi2sd	%ecx, %xmm1
+	movapd	%xmm0, %xmm2
+	addsd	%xmm4, %xmm2
+	divsd	%xmm2, %xmm1
+	unpcklpd	%xmm1, %xmm1
+	cvtpd2ps	%xmm1, %xmm5
+	movss	%xmm5, (%r9,%rdx,4)
+	leaq	1440048(%rsp), %rdi
+	movl	%eax, %ecx
+	subl	%edx, %ecx
+	cvtsi2sd	%ecx, %xmm1
+	addsd	%xmm3, %xmm0
+	divsd	%xmm0, %xmm1
+	movapd	%xmm1, %xmm0
+	unpcklpd	%xmm0, %xmm0
+	cvtpd2ps	%xmm0, %xmm6
+	movss	%xmm6, (%r8,%rdx,4)
+	addq	$1, %rdx
+	cmpq	$600, %rdx
+	jne	.L7
+	addl	$1, %eax
+	addq	$2400, %r10
+	cmpl	$600, %eax
+	jne	.L3
+	leaq	2880048(%rsp), %rax
+	leaq	4320048(%rsp), %r9
 	xorps	%xmm2, %xmm2
-	cvtsi2sdl	%ebx, %xmm2
-	xorps	%xmm3, %xmm3
-	cvtsi2sdl	%eax, %xmm3
-	movaps	%xmm3, %xmm4
-	addsd	%xmm0, %xmm4
-	divsd	%xmm4, %xmm2
-	cvtsd2ss	%xmm2, %xmm2
-	movss	%xmm2, (%rcx)
-	xorps	%xmm2, %xmm2
-	cvtsi2sdl	%esi, %xmm2
-	addsd	%xmm1, %xmm3
-	divsd	%xmm3, %xmm2
-	cvtsd2ss	%xmm2, %xmm2
-	movss	%xmm2, (%rdi)
-	incq	%rax
-	addq	$4, %rcx
-	addq	$4, %rdi
-	decl	%esi
-	cmpq	$600, %rax              ## imm = 0x258
-	jne	LBB1_2
-## BB#3:                                ##   in Loop: Header=BB1_1 Depth=1
-	incq	%rdx
-	addq	$2400, %r9              ## imm = 0x960
-	addq	$2400, %r8              ## imm = 0x960
-	cmpq	$600, %rdx              ## imm = 0x258
-	jne	LBB1_1
-## BB#4:
-	leaq	-4320084(%rbp), %rbx
-	.align	4, 0x90
-LBB1_5:                                 ## %.preheader1
-                                        ## =>This Loop Header: Depth=1
-                                        ##     Child Loop BB1_6 Depth 2
-                                        ##       Child Loop BB1_7 Depth 3
-	xorl	%r15d, %r15d
-	.align	4, 0x90
-LBB1_6:                                 ## %.preheader
-                                        ##   Parent Loop BB1_5 Depth=1
-                                        ## =>  This Loop Header: Depth=2
-                                        ##       Child Loop BB1_7 Depth 3
-	xorpd	%xmm0, %xmm0
-	movq	$-1440000, %r14         ## imm = 0xFFFFFFFFFFEA0700
-	movq	%r12, %r13
-	.align	4, 0x90
-LBB1_7:                                 ##   Parent Loop BB1_5 Depth=1
-                                        ##     Parent Loop BB1_6 Depth=2
-                                        ## =>    This Inner Loop Header: Depth=3
-	movss	%xmm0, -4320096(%rbp)   ## 4-byte Spill
-	movss	(%r13), %xmm0           ## xmm0 = mem[0],zero,zero,zero
-	leaq	-2880048(%rbp,%r14), %rax
-	movss	1440000(%rax,%r15,4), %xmm1 ## xmm1 = mem[0],zero,zero,zero
-	movq	%rbx, %rdi
-	callq	_producto
-	movss	-4320096(%rbp), %xmm0   ## 4-byte Reload
-                                        ## xmm0 = mem[0],zero,zero,zero
-	addss	-4320084(%rbp), %xmm0
-	addq	$4, %r13
-	addq	$2400, %r14             ## imm = 0x960
-	jne	LBB1_7
-## BB#8:                                ##   in Loop: Header=BB1_6 Depth=2
-	imulq	$2400, -4320104(%rbp), %rax ## 8-byte Folded Reload
-                                        ## imm = 0x960
-	leaq	-4320048(%rbp,%rax), %rax
-	movss	%xmm0, (%rax,%r15,4)
-	incq	%r15
-	cmpq	$600, %r15              ## imm = 0x258
-	jne	LBB1_6
-## BB#9:                                ##   in Loop: Header=BB1_5 Depth=1
-	movq	-4320104(%rbp), %rax    ## 8-byte Reload
-	incq	%rax
-	movq	%rax, -4320104(%rbp)    ## 8-byte Spill
-	addq	$2400, %r12             ## imm = 0x960
-	cmpq	$600, %rax              ## imm = 0x258
-	jne	LBB1_5
-## BB#10:
-	leaq	-4320080(%rbp), %rdi
-	xorl	%esi, %esi
-	callq	_gettimeofday
-	movq	-4320080(%rbp), %rax
-	subq	-4320064(%rbp), %rax
+	jmp	.L6
+.L3:
+	movl	$0, %edx
+	leaq	48(%rsp), %rdi
+	leaq	(%r10,%rdi), %r9
+	leaq	1440048(%rsp), %rdi
+	leaq	(%r10,%rdi), %r8
+	jmp	.L7
+.L10:
+	movss	(%rcx), %xmm1
+	mulss	(%rsi,%rdx), %xmm1
+	addss	%xmm1, %xmm0
+	addq	$2400, %rcx
+	addq	$4, %rdx
+	cmpq	$2400, %rdx
+	jne	.L10
+	movss	%xmm0, (%rax,%r8)
+	addq	$4, %r8
+	cmpq	$2400, %r8
+	je	.L9
+.L12:
+	leaq	(%rdi,%r8), %rcx
+	movl	$0, %edx
+	movaps	%xmm2, %xmm0
+	jmp	.L10
+.L9:
+	addq	$2400, %rax
+	addq	$2400, %rsi
+	cmpq	%r9, %rax
+	je	.L11
+.L6:
+	movl	$0, %r8d
+	jmp	.L12
+.L11:
+	movl	$0, %esi
+	leaq	32(%rsp), %rdi
+	call	gettimeofday
+	movq	32(%rsp), %rax
+	subq	16(%rsp), %rax
+	cvtsi2sdq	%rax, %xmm1
+	movq	40(%rsp), %rax
+	subq	24(%rsp), %rax
 	cvtsi2sdq	%rax, %xmm0
-	movl	-4320072(%rbp), %eax
-	subl	-4320056(%rbp), %eax
-	cvtsi2sdl	%eax, %xmm1
-	divsd	LCPI1_2(%rip), %xmm1
+	divsd	.LC5(%rip), %xmm0
 	addsd	%xmm0, %xmm1
-	movsd	%xmm1, -4320096(%rbp)   ## 8-byte Spill
-	movss	-2877648(%rbp), %xmm0   ## xmm0 = mem[0],zero,zero,zero
-	cvtss2sd	%xmm0, %xmm0
-	leaq	L_.str2(%rip), %rsi
-	movb	$1, %al
-	movq	-4320112(%rbp), %rdi    ## 8-byte Reload
-	callq	_fprintf
-	movsd	-4320096(%rbp), %xmm0   ## 8-byte Reload
-                                        ## xmm0 = mem[0],zero
-	mulsd	LCPI1_2(%rip), %xmm0
-	leaq	L_.str3(%rip), %rdi
-	movb	$1, %al
-	callq	_printf
-	movq	___stack_chk_guard@GOTPCREL(%rip), %rax
-	movq	(%rax), %rax
-	cmpq	-48(%rbp), %rax
-	jne	LBB1_12
-## BB#11:
-	xorl	%eax, %eax
-	addq	$4320072, %rsp          ## imm = 0x41EB48
+	movsd	%xmm1, 8(%rsp)
+	movss	4322448(%rsp), %xmm0
+	cvtps2pd	%xmm0, %xmm0
+	movl	$.LC6, %edx
+	movl	$1, %esi
+	movq	%rbx, %rdi
+	movl	$1, %eax
+	call	__fprintf_chk
+	movsd	.LC5(%rip), %xmm0
+	mulsd	8(%rsp), %xmm0
+	movl	$.LC7, %esi
+	movl	$1, %edi
+	movl	$1, %eax
+	call	__printf_chk
+	movl	$0, %eax
+	addq	$4320048, %rsp
+	.cfi_def_cfa_offset 16
 	popq	%rbx
-	popq	%r12
-	popq	%r13
-	popq	%r14
-	popq	%r15
-	popq	%rbp
-	retq
-LBB1_12:
-	callq	___stack_chk_fail
+	.cfi_def_cfa_offset 8
+	ret
 	.cfi_endproc
-
-	.section	__TEXT,__cstring,cstring_literals
-L_.str:                                 ## @.str
-	.asciz	"/dev/null"
-
-L_.str1:                                ## @.str1
-	.asciz	"w"
-
-L_.str2:                                ## @.str2
-	.asciz	"%f\n"
-
-L_.str3:                                ## @.str3
-	.asciz	"%.f"
-
-
-.subsections_via_symbols
+.LFE40:
+	.size	main, .-main
+	.section	.rodata.cst8,"aM",@progbits,8
+	.align 8
+.LC3:
+	.long	2576980378
+	.long	1072798105
+	.align 8
+.LC4:
+	.long	3435973837
+	.long	1073794252
+	.align 8
+.LC5:
+	.long	0
+	.long	1093567616
+	.ident	"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04) 4.8.4"
+	.section	.note.GNU-stack,"",@progbits

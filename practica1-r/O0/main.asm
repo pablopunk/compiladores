@@ -1,242 +1,222 @@
-	.section	__TEXT,__text,regular,pure_instructions
-	.macosx_version_min 10, 11
-	.globl	_producto
-	.align	4, 0x90
-_producto:                              ## @producto
+	.file	"main.c"
+	.text
+	.globl	producto
+	.type	producto, @function
+producto:
+.LFB2:
 	.cfi_startproc
-## BB#0:
 	pushq	%rbp
-Ltmp0:
 	.cfi_def_cfa_offset 16
-Ltmp1:
-	.cfi_offset %rbp, -16
+	.cfi_offset 6, -16
 	movq	%rsp, %rbp
-Ltmp2:
-	.cfi_def_cfa_register %rbp
+	.cfi_def_cfa_register 6
 	movss	%xmm0, -4(%rbp)
 	movss	%xmm1, -8(%rbp)
 	movq	%rdi, -16(%rbp)
-	movss	-4(%rbp), %xmm0         ## xmm0 = mem[0],zero,zero,zero
+	movss	-4(%rbp), %xmm0
 	mulss	-8(%rbp), %xmm0
-	movq	-16(%rbp), %rdi
-	movss	%xmm0, (%rdi)
+	movq	-16(%rbp), %rax
+	movss	%xmm0, (%rax)
 	popq	%rbp
-	retq
+	.cfi_def_cfa 7, 8
+	ret
 	.cfi_endproc
-
-	.section	__TEXT,__literal8,8byte_literals
-	.align	3
-LCPI1_0:
-	.quad	4696837146684686336     ## double 1.0E+6
-LCPI1_1:
-	.quad	4611911198408756429     ## double 2.1000000000000001
-LCPI1_2:
-	.quad	4607632778762754458     ## double 1.1000000000000001
-	.section	__TEXT,__text,regular,pure_instructions
-	.globl	_main
-	.align	4, 0x90
-_main:                                  ## @main
+.LFE2:
+	.size	producto, .-producto
+	.section	.rodata
+.LC0:
+	.string	"w"
+.LC1:
+	.string	"/dev/null"
+.LC6:
+	.string	"%f\n"
+.LC7:
+	.string	"%.f"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB3:
 	.cfi_startproc
-## BB#0:
 	pushq	%rbp
-Ltmp3:
 	.cfi_def_cfa_offset 16
-Ltmp4:
-	.cfi_offset %rbp, -16
+	.cfi_offset 6, -16
 	movq	%rsp, %rbp
-Ltmp5:
-	.cfi_def_cfa_register %rbp
-	subq	$4320112, %rsp          ## imm = 0x41EB70
-	leaq	L_.str(%rip), %rdi
-	leaq	L_.str1(%rip), %rsi
-	movq	___stack_chk_guard@GOTPCREL(%rip), %rax
-	movq	(%rax), %rax
-	movq	%rax, -8(%rbp)
-	movl	$0, -4320020(%rbp)
-	callq	_fopen
-	leaq	-4320040(%rbp), %rdi
-	xorl	%ecx, %ecx
-	movl	%ecx, %esi
-	movq	%rax, -4320096(%rbp)
-	callq	_gettimeofday
-	movl	$0, -4320068(%rbp)
-	movl	%eax, -4320100(%rbp)    ## 4-byte Spill
-LBB1_1:                                 ## =>This Loop Header: Depth=1
-                                        ##     Child Loop BB1_3 Depth 2
-	cmpl	$600, -4320068(%rbp)    ## imm = 0x258
-	jge	LBB1_8
-## BB#2:                                ##   in Loop: Header=BB1_1 Depth=1
-	movl	$0, -4320072(%rbp)
-LBB1_3:                                 ##   Parent Loop BB1_1 Depth=1
-                                        ## =>  This Inner Loop Header: Depth=2
-	cmpl	$600, -4320072(%rbp)    ## imm = 0x258
-	jge	LBB1_6
-## BB#4:                                ##   in Loop: Header=BB1_3 Depth=2
-	leaq	-2880016(%rbp), %rax
-	movsd	LCPI1_1(%rip), %xmm0    ## xmm0 = mem[0],zero
-	leaq	-1440016(%rbp), %rcx
-	movsd	LCPI1_2(%rip), %xmm1    ## xmm1 = mem[0],zero
-	movl	-4320068(%rbp), %edx
-	addl	-4320072(%rbp), %edx
-	cvtsi2sdl	%edx, %xmm2
-	cvtsi2sdl	-4320072(%rbp), %xmm3
-	addsd	%xmm1, %xmm3
-	divsd	%xmm3, %xmm2
-	cvtsd2ss	%xmm2, %xmm1
-	movslq	-4320072(%rbp), %rsi
-	movslq	-4320068(%rbp), %rdi
-	imulq	$2400, %rdi, %rdi       ## imm = 0x960
-	addq	%rdi, %rcx
-	movss	%xmm1, (%rcx,%rsi,4)
-	movl	-4320068(%rbp), %edx
-	subl	-4320072(%rbp), %edx
-	cvtsi2sdl	%edx, %xmm1
-	cvtsi2sdl	-4320072(%rbp), %xmm2
-	addsd	%xmm0, %xmm2
-	divsd	%xmm2, %xmm1
-	cvtsd2ss	%xmm1, %xmm0
-	movslq	-4320072(%rbp), %rcx
-	movslq	-4320068(%rbp), %rsi
-	imulq	$2400, %rsi, %rsi       ## imm = 0x960
-	addq	%rsi, %rax
-	movss	%xmm0, (%rax,%rcx,4)
-## BB#5:                                ##   in Loop: Header=BB1_3 Depth=2
-	movl	-4320072(%rbp), %eax
-	addl	$1, %eax
-	movl	%eax, -4320072(%rbp)
-	jmp	LBB1_3
-LBB1_6:                                 ##   in Loop: Header=BB1_1 Depth=1
-	jmp	LBB1_7
-LBB1_7:                                 ##   in Loop: Header=BB1_1 Depth=1
-	movl	-4320068(%rbp), %eax
-	addl	$1, %eax
-	movl	%eax, -4320068(%rbp)
-	jmp	LBB1_1
-LBB1_8:
-	movl	$0, -4320068(%rbp)
-LBB1_9:                                 ## =>This Loop Header: Depth=1
-                                        ##     Child Loop BB1_11 Depth 2
-                                        ##       Child Loop BB1_13 Depth 3
-	cmpl	$600, -4320068(%rbp)    ## imm = 0x258
-	jge	LBB1_20
-## BB#10:                               ##   in Loop: Header=BB1_9 Depth=1
-	movl	$0, -4320072(%rbp)
-LBB1_11:                                ##   Parent Loop BB1_9 Depth=1
-                                        ## =>  This Loop Header: Depth=2
-                                        ##       Child Loop BB1_13 Depth 3
-	cmpl	$600, -4320072(%rbp)    ## imm = 0x258
-	jge	LBB1_18
-## BB#12:                               ##   in Loop: Header=BB1_11 Depth=2
-	xorps	%xmm0, %xmm0
-	movss	%xmm0, -4320080(%rbp)
-	movl	$0, -4320076(%rbp)
-LBB1_13:                                ##   Parent Loop BB1_9 Depth=1
-                                        ##     Parent Loop BB1_11 Depth=2
-                                        ## =>    This Inner Loop Header: Depth=3
-	cmpl	$600, -4320076(%rbp)    ## imm = 0x258
-	jge	LBB1_16
-## BB#14:                               ##   in Loop: Header=BB1_13 Depth=3
-	leaq	-4320084(%rbp), %rdi
-	leaq	-2880016(%rbp), %rax
-	leaq	-1440016(%rbp), %rcx
-	movslq	-4320076(%rbp), %rdx
-	movslq	-4320068(%rbp), %rsi
-	imulq	$2400, %rsi, %rsi       ## imm = 0x960
-	addq	%rsi, %rcx
-	movss	(%rcx,%rdx,4), %xmm0    ## xmm0 = mem[0],zero,zero,zero
-	movslq	-4320072(%rbp), %rcx
-	movslq	-4320076(%rbp), %rdx
-	imulq	$2400, %rdx, %rdx       ## imm = 0x960
-	addq	%rdx, %rax
-	movss	(%rax,%rcx,4), %xmm1    ## xmm1 = mem[0],zero,zero,zero
-	callq	_producto
-	movss	-4320084(%rbp), %xmm0   ## xmm0 = mem[0],zero,zero,zero
-	addss	-4320080(%rbp), %xmm0
-	movss	%xmm0, -4320080(%rbp)
-## BB#15:                               ##   in Loop: Header=BB1_13 Depth=3
-	movl	-4320076(%rbp), %eax
-	addl	$1, %eax
-	movl	%eax, -4320076(%rbp)
-	jmp	LBB1_13
-LBB1_16:                                ##   in Loop: Header=BB1_11 Depth=2
-	leaq	-4320016(%rbp), %rax
-	movss	-4320080(%rbp), %xmm0   ## xmm0 = mem[0],zero,zero,zero
-	movslq	-4320072(%rbp), %rcx
-	movslq	-4320068(%rbp), %rdx
-	imulq	$2400, %rdx, %rdx       ## imm = 0x960
-	addq	%rdx, %rax
-	movss	%xmm0, (%rax,%rcx,4)
-## BB#17:                               ##   in Loop: Header=BB1_11 Depth=2
-	movl	-4320072(%rbp), %eax
-	addl	$1, %eax
-	movl	%eax, -4320072(%rbp)
-	jmp	LBB1_11
-LBB1_18:                                ##   in Loop: Header=BB1_9 Depth=1
-	jmp	LBB1_19
-LBB1_19:                                ##   in Loop: Header=BB1_9 Depth=1
-	movl	-4320068(%rbp), %eax
-	addl	$1, %eax
-	movl	%eax, -4320068(%rbp)
-	jmp	LBB1_9
-LBB1_20:
-	leaq	-4320056(%rbp), %rdi
-	xorl	%eax, %eax
-	movl	%eax, %esi
-	callq	_gettimeofday
-	leaq	L_.str2(%rip), %rsi
-	leaq	-4320016(%rbp), %rdi
-	movsd	LCPI1_0(%rip), %xmm0    ## xmm0 = mem[0],zero
-	movq	-4320056(%rbp), %rcx
-	subq	-4320040(%rbp), %rcx
-	cvtsi2sdq	%rcx, %xmm1
-	movl	-4320048(%rbp), %edx
-	subl	-4320032(%rbp), %edx
-	cvtsi2sdl	%edx, %xmm2
-	divsd	%xmm0, %xmm2
+	.cfi_def_cfa_register 6
+	subq	$4320096, %rsp
+	movl	$.LC0, %esi
+	movl	$.LC1, %edi
+	call	fopen
+	movq	%rax, -4320048(%rbp)
+	leaq	-4320032(%rbp), %rax
+	movl	$0, %esi
+	movq	%rax, %rdi
+	call	gettimeofday
+	movl	$0, -4320064(%rbp)
+	jmp	.L3
+.L6:
+	movl	$0, -4320060(%rbp)
+	jmp	.L4
+.L5:
+	movl	-4320060(%rbp), %eax
+	movl	-4320064(%rbp), %edx
+	addl	%edx, %eax
+	cvtsi2sd	%eax, %xmm0
+	cvtsi2sd	-4320060(%rbp), %xmm1
+	movsd	.LC2(%rip), %xmm2
 	addsd	%xmm2, %xmm1
-	movsd	%xmm1, -4320064(%rbp)
-	movq	-4320096(%rbp), %rcx
-	movslq	-4320072(%rbp), %r8
-	movslq	-4320068(%rbp), %r9
-	imulq	$2400, %r9, %r9         ## imm = 0x960
-	addq	%r9, %rdi
-	cvtss2sd	(%rdi,%r8,4), %xmm0
+	divsd	%xmm1, %xmm0
+	unpcklpd	%xmm0, %xmm0
+	cvtpd2ps	%xmm0, %xmm0
+	movl	-4320060(%rbp), %eax
+	cltq
+	movl	-4320064(%rbp), %edx
+	movslq	%edx, %rdx
+	imulq	$600, %rdx, %rdx
+	addq	%rdx, %rax
+	movss	%xmm0, -4320000(%rbp,%rax,4)
+	movl	-4320060(%rbp), %eax
+	movl	-4320064(%rbp), %edx
+	subl	%eax, %edx
+	movl	%edx, %eax
+	cvtsi2sd	%eax, %xmm0
+	cvtsi2sd	-4320060(%rbp), %xmm1
+	movsd	.LC3(%rip), %xmm2
+	addsd	%xmm2, %xmm1
+	divsd	%xmm1, %xmm0
+	unpcklpd	%xmm0, %xmm0
+	cvtpd2ps	%xmm0, %xmm0
+	movl	-4320060(%rbp), %eax
+	cltq
+	movl	-4320064(%rbp), %edx
+	movslq	%edx, %rdx
+	imulq	$600, %rdx, %rdx
+	addq	%rdx, %rax
+	movss	%xmm0, -2880000(%rbp,%rax,4)
+	addl	$1, -4320060(%rbp)
+.L4:
+	cmpl	$599, -4320060(%rbp)
+	jle	.L5
+	addl	$1, -4320064(%rbp)
+.L3:
+	cmpl	$599, -4320064(%rbp)
+	jle	.L6
+	movl	$0, -4320064(%rbp)
+	jmp	.L7
+.L12:
+	movl	$0, -4320060(%rbp)
+	jmp	.L8
+.L11:
+	movl	.LC4(%rip), %eax
+	movl	%eax, -4320052(%rbp)
+	movl	$0, -4320056(%rbp)
+	jmp	.L9
+.L10:
+	movl	-4320060(%rbp), %eax
+	cltq
+	movl	-4320056(%rbp), %edx
+	movslq	%edx, %rdx
+	imulq	$600, %rdx, %rdx
+	addq	%rdx, %rax
+	movl	-2880000(%rbp,%rax,4), %edx
+	movl	-4320056(%rbp), %eax
+	cltq
+	movl	-4320064(%rbp), %ecx
+	movslq	%ecx, %rcx
+	imulq	$600, %rcx, %rcx
+	addq	%rcx, %rax
+	movl	-4320000(%rbp,%rax,4), %eax
+	leaq	-4320068(%rbp), %rcx
 	movq	%rcx, %rdi
-	movl	%eax, -4320104(%rbp)    ## 4-byte Spill
-	movb	$1, %al
-	callq	_fprintf
-	leaq	L_.str3(%rip), %rdi
-	movsd	LCPI1_0(%rip), %xmm0    ## xmm0 = mem[0],zero
-	mulsd	-4320064(%rbp), %xmm0
-	movl	%eax, -4320108(%rbp)    ## 4-byte Spill
-	movb	$1, %al
-	callq	_printf
-	movq	___stack_chk_guard@GOTPCREL(%rip), %rcx
-	movq	(%rcx), %rcx
-	cmpq	-8(%rbp), %rcx
-	movl	%eax, -4320112(%rbp)    ## 4-byte Spill
-	jne	LBB1_22
-## BB#21:                               ## %SP_return
-	xorl	%eax, %eax
-	addq	$4320112, %rsp          ## imm = 0x41EB70
-	popq	%rbp
-	retq
-LBB1_22:                                ## %CallStackCheckFailBlk
-	callq	___stack_chk_fail
+	movl	%edx, -4320084(%rbp)
+	movss	-4320084(%rbp), %xmm1
+	movl	%eax, -4320084(%rbp)
+	movss	-4320084(%rbp), %xmm0
+	call	producto
+	movss	-4320068(%rbp), %xmm0
+	movss	-4320052(%rbp), %xmm1
+	addss	%xmm1, %xmm0
+	movss	%xmm0, -4320052(%rbp)
+	addl	$1, -4320056(%rbp)
+.L9:
+	cmpl	$599, -4320056(%rbp)
+	jle	.L10
+	movl	-4320060(%rbp), %eax
+	cltq
+	movl	-4320064(%rbp), %edx
+	movslq	%edx, %rdx
+	imulq	$600, %rdx, %rdx
+	addq	%rax, %rdx
+	movl	-4320052(%rbp), %eax
+	movl	%eax, -1440000(%rbp,%rdx,4)
+	addl	$1, -4320060(%rbp)
+.L8:
+	cmpl	$599, -4320060(%rbp)
+	jle	.L11
+	addl	$1, -4320064(%rbp)
+.L7:
+	cmpl	$599, -4320064(%rbp)
+	jle	.L12
+	leaq	-4320016(%rbp), %rax
+	movl	$0, %esi
+	movq	%rax, %rdi
+	call	gettimeofday
+	movq	-4320016(%rbp), %rdx
+	movq	-4320032(%rbp), %rax
+	subq	%rax, %rdx
+	movq	%rdx, %rax
+	cvtsi2sdq	%rax, %xmm1
+	movq	-4320008(%rbp), %rdx
+	movq	-4320024(%rbp), %rax
+	subq	%rax, %rdx
+	movq	%rdx, %rax
+	cvtsi2sdq	%rax, %xmm0
+	movsd	.LC5(%rip), %xmm2
+	divsd	%xmm2, %xmm0
+	addsd	%xmm1, %xmm0
+	movsd	%xmm0, -4320040(%rbp)
+	movl	-4320060(%rbp), %eax
+	cltq
+	movl	-4320064(%rbp), %edx
+	movslq	%edx, %rdx
+	imulq	$600, %rdx, %rdx
+	addq	%rdx, %rax
+	movss	-1440000(%rbp,%rax,4), %xmm0
+	unpcklps	%xmm0, %xmm0
+	cvtps2pd	%xmm0, %xmm0
+	movq	-4320048(%rbp), %rax
+	movl	$.LC6, %esi
+	movq	%rax, %rdi
+	movl	$1, %eax
+	call	fprintf
+	movsd	-4320040(%rbp), %xmm1
+	movsd	.LC5(%rip), %xmm0
+	mulsd	%xmm1, %xmm0
+	movl	$.LC7, %edi
+	movl	$1, %eax
+	call	printf
+	movl	$0, %eax
+	leave
+	.cfi_def_cfa 7, 8
+	ret
 	.cfi_endproc
-
-	.section	__TEXT,__cstring,cstring_literals
-L_.str:                                 ## @.str
-	.asciz	"/dev/null"
-
-L_.str1:                                ## @.str1
-	.asciz	"w"
-
-L_.str2:                                ## @.str2
-	.asciz	"%f\n"
-
-L_.str3:                                ## @.str3
-	.asciz	"%.f"
-
-
-.subsections_via_symbols
+.LFE3:
+	.size	main, .-main
+	.section	.rodata
+	.align 8
+.LC2:
+	.long	2576980378
+	.long	1072798105
+	.align 8
+.LC3:
+	.long	3435973837
+	.long	1073794252
+	.align 4
+.LC4:
+	.long	0
+	.align 8
+.LC5:
+	.long	0
+	.long	1093567616
+	.ident	"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04) 4.8.4"
+	.section	.note.GNU-stack,"",@progbits
