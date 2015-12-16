@@ -1,17 +1,24 @@
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 #include <sys/time.h>
 
-#define N 100000000
+int N = 10000;
 
-double res[N];
-
-int main()
+int main(int argc, char ** argv)
 {
   struct timeval inicio, final;
   double tiempo, x;
   int i;
+  FILE* fp = fopen("/dev/null", "w");
 
+  argc--; argv++;
+  if ( argv[0] && isdigit(argv[0][0]) ) {
+    N = atoi(argv[0]);
+  }
+
+  double* res = (double*) malloc(N*sizeof(double));
   gettimeofday(&inicio, NULL); // inicio de codigo a medir
 
   for (i=0; i<N; i++)
@@ -27,7 +34,10 @@ int main()
 
   tiempo = (final.tv_sec - inicio.tv_sec + (final.tv_usec - inicio.tv_usec)/1.e6);
 
-  printf("Resultado: %e\nTiempo: %f\n", res[N-1], tiempo);
+  fprintf(fp, "%f\n", res[N-1]); // uso un resultado para evitar optimizaciones forzosas
+  printf("%.f",tiempo*1e6);
+
+  fclose(fp);
 
   return 0;
 }

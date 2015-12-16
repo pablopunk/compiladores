@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # archivo CSV
 echo "Opciones;O0;O1;O2;O3;Os" > resultados/2h.csv
