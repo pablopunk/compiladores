@@ -4,7 +4,7 @@
 #include <sys/time.h>
 #include <ctype.h>
 
-#define ITER 1000
+#define ITER 100
 
 int main(int argc, char ** argv)
 {
@@ -19,16 +19,25 @@ int main(int argc, char ** argv)
   }
 
   float a[N][N], b[N][N], c[N][N];
+  // dinamico
+  // float ** a = (float**) malloc(N*sizeof(float*));
+  // float ** b = (float**) malloc(N*sizeof(float*));
+  // float ** c = (float**) malloc(N*sizeof(float*));
+  // for (i=0; i<N; i++) {
+  //   a[i] = (float*) malloc(N*sizeof(float));
+  //   b[i] = (float*) malloc(N*sizeof(float));
+  //   c[i] = (float*) malloc(N*sizeof(float));
+  // }
   float aux;
-  // enfriar cache
-  for (l=0; l<ITER; l++)
-    for (i=0; i<N; i++)
-      for (j=0; j<N; j++)
-        for (k=0; k<N; k++) {
-          aux = c[k][i];
-          aux = a[k][j];
-          aux = b[j][i];
-        }
+  // // enfriar cache
+  // for (l=0; l<ITER; l++)
+  //   for (i=0; i<N; i++)
+  //     for (j=0; j<N; j++)
+  //       for (k=0; k<N; k++) {
+  //         aux = c[k][i];
+  //         aux = a[k][j];
+  //         aux = b[j][i];
+  //       }
   gettimeofday(&inicio, NULL); // inicio de codigo a medir
   for (l=0; l<ITER; l++)
     for (i=0; i<N; i++)
@@ -52,5 +61,5 @@ int main(int argc, char ** argv)
   tiempo_optimizado = (final.tv_sec - inicio.tv_sec + (final.tv_usec - inicio.tv_usec)/1.e6);
 
 
-  printf("\nNo optimizado: %f\tOptimizado: %f\n\n", tiempo_sin_optimizar, tiempo_optimizado);
+  printf(";%.0f;%.0f", tiempo_sin_optimizar*1e6, tiempo_optimizado*1e6);
 }
