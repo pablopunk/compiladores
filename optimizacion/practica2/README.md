@@ -6,7 +6,7 @@ El script `exe.sh` compila y ejecuta todas las combinaciones de optimizaciones y
 
 Podemos cambiar las opciones `-O` del compilador en esta linea del script (de `O0` a `O3`):
 ```
-o_list=`seq 0 3`  (de 0 a 3)
+o_list=`seq 0 3`
 ```
 
 ##### Tamaño de matriz
