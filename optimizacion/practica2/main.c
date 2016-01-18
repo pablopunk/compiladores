@@ -29,15 +29,15 @@ int main(int argc, char ** argv)
   //   c[i] = (float*) malloc(N*sizeof(float));
   // }
   float aux;
-  // // enfriar cache
-  // for (l=0; l<ITER; l++)
-  //   for (i=0; i<N; i++)
-  //     for (j=0; j<N; j++)
-  //       for (k=0; k<N; k++) {
-  //         aux = c[k][i];
-  //         aux = a[k][j];
-  //         aux = b[j][i];
-  //       }
+  // enfriar cache
+  for (l=0; l<ITER; l++)
+    for (i=0; i<N; i++)
+      for (j=0; j<N; j++)
+        for (k=0; k<N; k++) {
+          aux = c[k][i];
+          aux = a[k][j];
+          aux = b[j][i];
+        }
   gettimeofday(&inicio, NULL); // inicio de codigo a medir
   for (l=0; l<ITER; l++)
     for (i=0; i<N; i++)

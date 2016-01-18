@@ -1,25 +1,50 @@
 #!/bin/bash
 
-# compilar
-gcc main.c -o bin/O0/main -O0
-gcc main.c -o bin/O1/main -O1
-gcc main.c -o bin/O2/main -O2
-gcc main.c -o bin/O3/main -O3
+#variables
+o_list=`seq 0 3`
+n_list=`seq 100 100 400`
+NPROC=0 # numero de procesos arrancados
+NR_CPUS=4 # cpus maximas
 
-echo "N;O0 no optimizado;O0 optimizado;O1 no optimizado;O1 optimizado;O2 no optimizado; O2 optimizado;O3 no optimizado;O3 optimizado" > resultados/resultados.csv
-
-T="$(date +%s)"
-# ejecutar
-N=100 # valor inicial de N, se incrementa en cada iteracion del bucle
-for i in `seq 1 4`;
+#compilar
+for o in $o_list;
 do
-  echo "Ejecutando para N=$N.."
-  echo -n "N=$N" >> resultados/resultados.csv
-  ./bin/O0/main $N | xargs echo -n >> resultados/resultados.csv
-  ./bin/O1/main $N | xargs echo -n >> resultados/resultados.csv
-  ./bin/O2/main $N | xargs echo -n >> resultados/resultados.csv
-  ./bin/O3/main $N | xargs echo    >> resultados/resultados.csv # \n
-  let N=N+100
+  mkdir -p "bin/O$o"
+  # compilar
+  gcc main.c -o "bin/O$o/main" "-O$o"
 done
-T="$(($(date +%s)-T))"
-echo "Ejecutado en $T segundos"
+
+# ejecutar
+mkdir -p resultados
+echo " -> Ejecutando.."
+T="$(date +%s)" # INICIO -- medir tiempo ejecucion
+for o in $o_list; # optimizations
+do
+  echo -e "\n\t- Optimizacion O$o"
+  for n in $n_list; # matrix size
+  do
+    echo -e "\t\t- N=$n.."
+    ./bin/O$o/main $n > resultados/.$o$n.tmp & # sin el & podemos ejecutarlo en serie
+    let NPROC=NPROC+1 # un proceso mas
+    [[ $((NPROC%NR_CPUS)) -eq 0 ]] && wait # si hay mas procesos que CPUs, esperamos
+  done
+done
+
+wait # esperar por todos los procesos
+
+T="$(($(date +%s)-T))" # FINAL -- medir tiempo ejecucion
+echo -e "\n -> Ejecutado en $T segundos"
+
+# guardar
+echo " -> Guardando datos..."
+echo "N;O0 no optimizado;O0 optimizado;O1 no optimizado;O1 optimizado;O2 no optimizado; O2 optimizado;O3 no optimizado;O3 optimizado" > resultados/resultados.csv
+for n in $n_list; # optimizations
+do
+  echo -n "N=$n" >> resultados/resultados.csv
+  for o in $o_list; # matrix size
+  do
+    cat resultados/.$o$n.tmp >> resultados/resultados.csv
+  done
+  echo >> resultados/resultados.csv
+done
+rm -f resultados/.*.tmp
