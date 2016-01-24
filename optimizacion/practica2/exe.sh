@@ -6,6 +6,15 @@ n_list=`seq 100 100 400`
 NPROC=0 # numero de procesos arrancados
 NR_CPUS=4 # cpus maximas
 
+# atrapar CTRL+C y llamar a la funcion
+trap ctrl_c INT
+
+function ctrl_c() {
+  killall main
+  rm -f resultados/.*.tmp
+  exit 127
+}
+
 #compilar
 for o in $o_list;
 do
